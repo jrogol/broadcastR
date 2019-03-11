@@ -1,0 +1,12 @@
+Package: broadcastR
+Title: Tools for ACC Network Broadcasts
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "James",
+           family = "Rogol",
+           role = c("aut", "cre"),
+           email = "james.rogol@gmail.com")
+Description: A suite of tools to enhance and automate preparation of ACC Network broadcasts.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
