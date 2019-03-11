@@ -1,0 +1,87 @@
+fetchPlayerNodes_Sidearm <- function(link) {
+  page <- xml2::read_html(link)
+  
+  players <- rvest::html_nodes(page, css = "li.sidearm-roster-player")
+  
+  return(players)
+}
+
+
+players <- fetchPlayerNodes(link)
+
+# These should be moved into their own, smaller functions....
+fetchPlayer_Sidearm <- function(node) {
+  position <- node %>% 
+    rvest::html_node(css = "span.text-bold") %>%
+    rvest::html_text(trim = T)
+  
+  number <- node %>% 
+    rvest::html_node(css = "span.sidearm-roster-player-jersey-number") %>%
+    rvest::html_text(trim = T)
+  
+  name <- node %>% 
+    rvest::html_node(css = "p") %>%
+    rvest::html_text(trim = T)
+  
+  bats <- node %>% 
+    rvest::html_node(css = "span.sidearm-roster-player-custom2") %>%
+    rvest::html_text(trim = T)
+  
+  hometown <- node %>% 
+    rvest::html_node(css = "span.sidearm-roster-player-hometown") %>%
+    rvest::html_text(trim = T)
+  
+  height <- node %>% 
+    rvest::html_node(css = "span.sidearm-roster-player-height") %>%
+    rvest::html_text(trim = T)
+  
+  weight <- node %>% 
+    rvest::html_node(css = "span.sidearm-roster-player-weight") %>%
+    rvest::html_text(trim = T)
+  
+  year <- node %>% 
+    rvest::html_nodes(css = "span.sidearm-roster-player-academic-year:not(.hide-on-large)") %>%
+    rvest::html_text(trim = T)
+  
+  
+  
+  # Add proper formatting for columns
+  player <- dplyr::bind_cols(Number = readr::parse_number(number),
+                             name = name,
+                             Position1 = position,
+                             bats = bats,
+                             hometown = hometown,
+                             Height = height,
+                             Weight = weight,
+                             Year = year)
+  
+  return(player)
+}
+
+
+
+fetchRoster_Sidearm <- function(link){
+  players <- fetchPlayerNodes_Sidearm(link)
+  
+  roster <- purrr::map_df(players, fetchPlayer_Sidearm)
+  
+  return(roster)
+}
+
+
+
+
+cleanRoster_Sidearm <- function(rosterTable){
+  # Split bats into bats/throws, hometown into hometown/state, remove lbs from weight.
+  
+  player_df <- player_df %>% 
+    tidyr::separate(bats,
+                    into = c("Bats","Throws"),
+                    sep = "/") %>% 
+    tidyr::separate(hometown,
+                    into = c("Hometown","State"),
+                    sep = ", +") %>% 
+    dplyr::mutate(Weight = readr::parse_number(Weight))
+  
+  return(player_df)
+}

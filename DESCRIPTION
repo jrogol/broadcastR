@@ -10,3 +10,14 @@ Description: A suite of tools to enhance and automate preparation of ACC Network
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 6.1.1
+Imports: 
+    magrittr,
+    dplyr,
+    tidyr,
+    rvest,
+    xml2,
+    purrr,
+    readr,
+    stringr
