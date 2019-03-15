@@ -1,7 +1,7 @@
 joinStates <- function(roster_df, from = "AP", to = "USPS"){
   
   roster <-  dplyr::left_join(roster_df,
-                              dplyr::select(broadcastR::states,  #broadcastR:::states
+                              dplyr::select(states,  
                                             from,
                                             to),
                               by = c("State" = from)) %>% 
@@ -15,7 +15,7 @@ joinStates <- function(roster_df, from = "AP", to = "USPS"){
 
 # The regEx looks for a space, followed by a (possibly) hypenated
 # word and an end line, e.g. the last word.
-separateName <- function(roster_df, sep = " (?=[\\w-]+$)",...){
+separateName <- function(roster_df, sep = " +(?=[\\w-]+$)",...){
   roster <- tidyr::separate(roster_df,Name, 
                             into= c("First", "Last"),
                             sep = sep,
@@ -48,9 +48,12 @@ fetchStatSource <- function(statURL){
 
 
 formatStats <- function(stats_df, col.names){
+  
+  col <- gsub("_PlayerDemographics","",col.names)
+  
   output <- stats_df %>% 
-    `is.na<-` (setdiff(col.names, names(.))) %>% 
-    select(col.names)
+    `is.na<-` (setdiff(col, names(.))) %>% 
+    dplyr::select(col)
   
   return(output)
 }

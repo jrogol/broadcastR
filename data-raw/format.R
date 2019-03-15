@@ -52,8 +52,6 @@ format <- paste0(names(template),suffixes)
 
 format <- gsub("\\.\\.(\\d{2,})?","",format,perl = T)
 
-format
-
 # Season Batting Stats -----------------------------------------------------------
 # the following are the stats we're looking for:
 battingStats <- format %>% 

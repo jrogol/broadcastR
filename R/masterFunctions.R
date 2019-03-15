@@ -43,7 +43,7 @@ getRoster <- function(teamName, url, source = c("sidearm","wmt","neulion","prest
 #' @export
 #'
 #' @examples
-getStats <- function(team, statURL, roster_df, col.names = broadcastR:::xlnames ,...) {
+getStats <- function(team, statURL, roster_df, col.names = format ,...) {
   source <- fetchStatSource(statURL)
   
   stats <- switch(source,
