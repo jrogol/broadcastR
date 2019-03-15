@@ -43,11 +43,36 @@ getRoster <- function(teamName, url, source = c("sidearm","wmt","neulion","prest
 #' @export
 #'
 #' @examples
-getStats <- function(team, statURL, roster_df,...) {
+getStats <- function(team, statURL, roster_df, col.names = broadcastR:::xlnames ,...) {
   source <- fetchStatSource(statURL)
   
-  switch(source,
+  stats <- switch(source,
          sidearm = getStats_Sidearm(statURL, roster_df),
          statcrew = getStats_StatCrew(statURL, roster_df),
          d1 = getStats_D1(statURL, roster_df))
+  
+  return(formatStats(stats, col.names))
+}
+
+
+
+
+#' Title
+#'
+#' @param team 
+#' @param stats_df 
+#' @param na.str 
+#' @param output.dir 
+#' @param ... 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+exportStats <- function(team, stats_df, na.str = "", output.dir = NULL, ...){
+  if (is.null(output.dir)){
+    readr::write_csv(stats_df, sprintf("%s_Stats.csv", team), na = na.str, ...)
+  } else {
+    readr::write_csv(stats_df, sprintf("%s/%s_Stats.csv", output.dir, team), na = na.str, ...)
+  }
 }

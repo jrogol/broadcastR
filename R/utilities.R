@@ -47,5 +47,10 @@ fetchStatSource <- function(statURL){
 }
 
 
-
-
+formatStats <- function(stats_df, col.names){
+  output <- stats_df %>% 
+    `is.na<-` (setdiff(col.names, names(.))) %>% 
+    select(col.names)
+  
+  return(output)
+}
