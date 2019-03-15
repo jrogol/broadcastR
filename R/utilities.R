@@ -1,7 +1,7 @@
 joinStates <- function(roster_df, from = "AP", to = "USPS"){
   
   roster <-  dplyr::left_join(roster_df,
-                              dplyr::select(broadcastR:::states,  #broadcastR:::states
+                              dplyr::select(broadcastR::states,  #broadcastR:::states
                                             from,
                                             to),
                               by = c("State" = from)) %>% 
