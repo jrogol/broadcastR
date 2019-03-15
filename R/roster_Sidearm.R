@@ -7,7 +7,6 @@ fetchPlayerNodes_Sidearm <- function(link) {
 }
 
 
-players <- fetchPlayerNodes(link)
 
 # These should be moved into their own, smaller functions....
 fetchPlayer_Sidearm <- function(node) {
@@ -47,7 +46,7 @@ fetchPlayer_Sidearm <- function(node) {
   
   # Add proper formatting for columns
   player <- dplyr::bind_cols(Number = readr::parse_number(number),
-                             name = name,
+                             Name = name,
                              Position1 = position,
                              bats = bats,
                              hometown = hometown,
@@ -60,7 +59,7 @@ fetchPlayer_Sidearm <- function(node) {
 
 
 
-fetchRoster_Sidearm <- function(link){
+getRoster_Sidearm <- function(link){
   players <- fetchPlayerNodes_Sidearm(link)
   
   roster <- purrr::map_df(players, fetchPlayer_Sidearm)

@@ -1,2 +1,4 @@
+^\.here$
+^Scratch$
 ^.*\.Rproj$
 ^\.Rproj\.user$

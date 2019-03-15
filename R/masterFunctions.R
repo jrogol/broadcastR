@@ -15,35 +15,37 @@ getRoster <- function(teamName, url, source = c("sidearm","wmt","neulion","prest
   sport <- match.arg(source)
   # Error Handling for url
 
-  switch (source,
-    "sidearm" = getSidearmRoster(teamName,url,sport),
-    "wmt" = getWMTRoster(teamName,url,sport),
-    "neulion" = getNeulionRoster(teamName,url,sport),
-    "presto" = getPrestoRoster(teamName,url,sport),
-    "liberty" = getLibertyRoster(teamName,url,sport)
+  roster <- switch (source,
+    sidearm = getRoster_Sidearm(teamName,url,sport),
+    # wmt = getRoster_WMT(teamName,url,sport),
+    neulion = getRoster_NL(teamName,url,sport)#,
+    # presto = getRoster_Presto(teamName,url,sport),
+    # liberty = getRoster_Liberty(teamName,url,sport)
   )
+  
+  roster <- separateName(roster)
+  
+  # roster <- joinStates(roster)
 }
+
 
 
 #' Title
 #'
-#' @param teamName
-#' @param url
-#' @param source
-#' @param sport
+#' @param team 
+#' @param statURL 
+#' @param roster_df 
+#' @param ... 
 #'
 #' @return
 #' @export
 #'
 #' @examples
-getStats <- function(teamName, url, source = c("sidearm","statcrew","statcrewPDF"), sport = "baseball"){
-  source <- match.arg(source)
-  sport <- match.arg(source)
-  # Error Handling for url
-
-  switch (source,
-          "statcrew" = getStatCrewStats(teamName,url,sport),
-          "sidearm" = getSidearmStats(teamName,url,sport),
-          "statcrewPDF" = getStatCrewPDF(teamName,url,sport)
-  )
+getStats <- function(team, statURL, roster_df,...) {
+  source <- fetchStatSource(statURL)
+  
+  switch(source,
+         sidearm = getStats_Sidearm(statURL, roster_df),
+         statcrew = getStats_StatCrew(statURL, roster_df),
+         d1 = getStats_D1(statURL, roster_df))
 }

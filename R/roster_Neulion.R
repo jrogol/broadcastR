@@ -1,9 +1,3 @@
-team <- teams %>%
-  filter(team == "Duke")
-
-# Visiting Team
-link <- team$roster
-
 # reads roster into a table
 fetchRoster_NL <- function(link){
   page <- xml2::read_html(link)
@@ -12,12 +6,9 @@ fetchRoster_NL <- function(link){
   
   table <- rvest::html_table(table, trim = TRUE)
   
-  tibble::as_tibble(table)
+  dplyr::as_tibble(table)
   
 }
-
-roster <- fetchRoster_NL(link)
-
 
 cleanRoster_NL <- function(rosterTable) {
   player_df <- rosterTable %>% 
@@ -43,4 +34,13 @@ cleanRoster_NL <- function(rosterTable) {
                   Height = stringr::str_replace(Height, "(\\d)-(\\d+)","\\1'\\2\\\""))
   
   return(player_df)
+}
+
+
+getRoster_NL <- function(link){
+  roster <- fetchRoster_NL(link)
+  
+  rosterClean <- cleanRoster_NL(roster)
+  
+  return(rosterClean)
 }

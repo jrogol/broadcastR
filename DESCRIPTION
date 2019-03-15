@@ -7,6 +7,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "james.rogol@gmail.com")
 Description: A suite of tools to enhance and automate preparation of ACC Network broadcasts.
+Depends: R (>= 2.10)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -21,3 +22,6 @@ Imports:
     purrr,
     readr,
     stringr
+Suggests: 
+    spelling
+Language: en-US

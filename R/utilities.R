@@ -6,7 +6,7 @@ joinStates <- function(roster_df, from = "AP", to = "USPS"){
                                             to),
                               by = c("State" = from)) %>% 
     dplyr::select(-State) %>%
-    dplyr:::rename("State" = to)
+    dplyr::rename("State" = to)
   
   return(roster)
   
@@ -33,3 +33,19 @@ write_roster <- function(df,team,sport, ...){
   # Add error handling
   readr::write_csv(df, sprintf("%s_%s.csv", team, sport), col_names=F)
 }
+
+
+
+fetchStatSource <- function(statURL){
+  if (grepl("cumestats\\.aspx",statURL)) {
+    "sidearm"
+  } else if (grepl("teamcume|teamstat", statURL)) {
+    "statcrew"
+  } else {
+    "d1"
+  }
+}
+
+
+
+
