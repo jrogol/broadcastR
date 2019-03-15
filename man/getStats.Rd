@@ -4,7 +4,7 @@
 \alias{getStats}
 \title{Title}
 \usage{
-getStats(team, statURL, roster_df, col.names = broadcastR:::xlnames, ...)
+getStats(team, statURL, roster_df, col.names = format, ...)
 }
 \arguments{
 \item{team}{}
