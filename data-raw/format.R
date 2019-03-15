@@ -1,4 +1,3 @@
-library(dplyr)
 # All Names ---------------------------------------------------------------
 file <- here::here("data-raw","ESPN_BASEBALL_TEMPLATE.xls")
 
@@ -23,13 +22,13 @@ suffix <- suffix %>%
   tidyr::gather(column, name) %>% 
   # Fill with previous
   tidyr::fill(name) %>% 
-  select(-column)
+  dplyr::select(-column)
 
 # To complete the suffix, an underscore will be added to the beginning of the string.
 
 ##### NOTE: This doesn't add _PitchingSeries to the 14 other columns here...
 suffix <- suffix %>% 
-  mutate(name = paste0("_",name))
+  dplyr::mutate(name = paste0("_",name))
 
 # The suffixes aren't the same length as the formatted names, as the suffixes
 # truncate the empty columns at the end. We can add them my repeating the last
