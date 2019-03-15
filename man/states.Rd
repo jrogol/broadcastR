@@ -13,13 +13,13 @@
 ...
 }}
 \source{
-\url{}
+\url{https://en.wikipedia.org/wiki/List_of_U.S._state_abbreviations}
 }
 \usage{
 states
 }
 \description{
 A data set containing common abbreviations for the 50 United States and
-Washington, D.C.
+Washington, D.C. Created using \code{Ecfun::\link[Ecfun]{readUSstateAbbreviations}}
 }
 \keyword{datasets}

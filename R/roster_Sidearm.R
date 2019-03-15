@@ -59,7 +59,7 @@ fetchPlayer_Sidearm <- function(node) {
 
 
 
-getRoster_Sidearm <- function(teamName, url, sport){
+fetchRoster_Sidearm <- function(teamName, url, sport){
   players <- fetchPlayerNodes_Sidearm(url)
   
   roster <- purrr::map_df(players, fetchPlayer_Sidearm)
@@ -68,12 +68,20 @@ getRoster_Sidearm <- function(teamName, url, sport){
 }
 
 
+getRoster_Sidearm <- function(teamName, url, sport) {
+  roster <- fetchRoster_Sidearm(teamName, url, sport)
+  
+  rosterClean <- cleanRoster_Sidearm(roster)
+  
+  return(rosterClean)
+}
+
 
 
 cleanRoster_Sidearm <- function(rosterTable){
   # Split bats into bats/throws, hometown into hometown/state, remove lbs from weight.
   
-  player_df <- player_df %>% 
+  player_df <- rosterTable %>% 
     tidyr::separate(bats,
                     into = c("Bats","Throws"),
                     sep = "/") %>% 
