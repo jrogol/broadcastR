@@ -1,5 +1,5 @@
-fetchPlayerNodes_Sidearm <- function(link) {
-  page <- xml2::read_html(link)
+fetchPlayerNodes_Sidearm <- function(url) {
+  page <- xml2::read_html(url)
   
   players <- rvest::html_nodes(page, css = "li.sidearm-roster-player")
   
@@ -59,8 +59,8 @@ fetchPlayer_Sidearm <- function(node) {
 
 
 
-getRoster_Sidearm <- function(link){
-  players <- fetchPlayerNodes_Sidearm(link)
+getRoster_Sidearm <- function(teamName, url, sport){
+  players <- fetchPlayerNodes_Sidearm(url)
   
   roster <- purrr::map_df(players, fetchPlayer_Sidearm)
   

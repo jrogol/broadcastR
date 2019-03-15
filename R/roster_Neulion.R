@@ -1,6 +1,6 @@
 # reads roster into a table
-fetchRoster_NL <- function(link){
-  page <- xml2::read_html(link)
+fetchRoster_NL <- function(url){
+  page <- xml2::read_html(url)
   
   table <- rvest::html_node(page,"#roster-list-table")
   
@@ -37,8 +37,8 @@ cleanRoster_NL <- function(rosterTable) {
 }
 
 
-getRoster_NL <- function(link){
-  roster <- fetchRoster_NL(link)
+getRoster_NL <- function(teamName, url, sport){
+  roster <- fetchRoster_NL(url)
   
   rosterClean <- cleanRoster_NL(roster)
   
