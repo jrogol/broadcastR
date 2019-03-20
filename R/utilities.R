@@ -57,3 +57,21 @@ formatStats <- function(stats_df, col.names){
   
   return(output)
 }
+
+
+
+
+# export_stats <- function(stats_df, na.str = "", output.dir = NULL, team, col.names = broadcastR:::xlnames, silent = F, ...){
+#   
+#   output <- df %>% 
+#     `is.na<-` (setdiff(col.names, names(.))) %>% # broadcastR:::xlnames
+#     select(col.names)
+#   
+#   if (is.null(output.dir)){
+#     readr::write_csv(output, sprintf("%s_Stats.csv", team), na = na.str)
+#   } else {
+#     readr::write_csv(output, sprintf("%s/%s_Stats.csv", output.dir, team), na = na.str)
+#   }
+#   
+#   if (!silent) return(output)
+# }

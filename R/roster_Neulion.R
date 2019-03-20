@@ -24,7 +24,7 @@ cleanRoster_NL <- function(rosterTable) {
                     into = c("Hometown","State"),
                     sep = ", +") %>% 
     # Extract the last text after all the newlines and tabs
-    dplyr::mutate_all(stringr::str_extract,"[\\w -\\.,]+$") %>% 
+    dplyr::mutate_all(stringr::str_extract,"[\\w -\\.,\\d]+$") %>% 
     dplyr::mutate(Year = dplyr::case_when(Year == "Fr." ~ "Freshman",
                                           Year == "So." ~ "Sophomore",
                                           Year == "Jr." ~ "Junior",

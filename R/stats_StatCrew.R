@@ -97,7 +97,8 @@ cleanPitching_StatCrew <- function(table) {
     dplyr::select(PLAYER, base::intersect(pitchingStats,names(.))) %>%  #broadcastR:::battingStats
     dplyr::rename_at(dplyr::vars(-PLAYER),~paste0(.,"_PitchingSeason"))
   
-  pitching <- dplyr::mutate(pitching, IP = format(IP_PitchingSeason, nsmall = 1))
+  pitching <- dplyr::mutate(pitching, IP_PitchingSeason = format(IP_PitchingSeason, nsmall = 1))
+  
   return(pitching)
 }
 
@@ -114,19 +115,4 @@ joinStatCrew <- function(player_df,tableList) {
     dplyr::arrange(as.numeric(Number))
   
   return(output)
-}
-
-export_stats <- function(stats_df, na.str = "", output.dir = NULL, team, col.names = broadcastR:::xlnames, silent = F, ...){
-  
-  output <- df %>% 
-    `is.na<-` (setdiff(col.names, names(.))) %>% # broadcastR:::xlnames
-    select(col.names)
-  
-  if (is.null(output.dir)){
-    readr::write_csv(output, sprintf("%s_Stats.csv", team), na = na.str)
-  } else {
-    readr::write_csv(output, sprintf("%s/%s_Stats.csv", output.dir, team), na = na.str)
-  }
-  
-  if (!silent) return(output)
 }
