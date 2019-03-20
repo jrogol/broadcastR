@@ -98,6 +98,7 @@ cleanPitching_StatCrew <- function(table) {
     dplyr::rename_at(dplyr::vars(-PLAYER),~paste0(.,"_PitchingSeason"))
   
   pitching <- dplyr::mutate(pitching, IP_PitchingSeason = format(IP_PitchingSeason, nsmall = 1))
+  
   return(pitching)
 }
 
