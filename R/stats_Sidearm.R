@@ -1,11 +1,11 @@
 
 
-getStats_Sidearm <- function(){
-  tables <- fetchStatsSidearm()
+getStats_Sidearm <- function(statsURL, player_df, ...){
+  tables <- fetchStatsSidearm(statsURL,...)
   
-  clean <- cleanStatsSidearm(tables)
+  clean <- cleanStats_Sidearm(tables)
   
-  joined
+  joined <- joinStatCrew(player_df, clean)
   
   return(joined)
 }
@@ -49,6 +49,8 @@ cleanStats_Sidearm <- function(listTable){
 cleanPlayer_SidearmStats <- function(table, col = "Player") {
   table[,col] <- stringr::str_trim(gsub("\\r\\n.*","",table[,col]))
   
+  table[,col] <- sub("([\\w-' ]+), ([\\w-' ]+)", "\\2 \\1", table[,col], perl = T)
+  
   table <- dplyr::rename_all(table,toupper)
   
   return(table)
@@ -70,15 +72,13 @@ cleanBatting_Sidearm <- function(listTable,...){
 }
 
 cleanPitching_Sidearm <- function(listTable,...) {
-  pitching <- stats2$pitching %>% 
+  pitching <- listTable$pitching %>% 
     tidyr::separate("W-L", into = c("Win","Loss"),
                     sep = "-") %>% 
     tidyr::separate("APP-GS",
                     into = c("G","GS"),
                     sep = "-") %>% 
     dplyr::mutate(SHO = stringr::str_remove(SHO,"-.*"))
-  
-  
   
   
   pitching <- pitching %>% 
