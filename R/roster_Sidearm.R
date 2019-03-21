@@ -22,8 +22,9 @@ fetchPlayer_Sidearm <- function(node) {
     rvest::html_node(css = "p") %>%
     rvest::html_text(trim = T)
   
+  # Pitt uses custom1 - not custom2 - the syntax below enables fuzzy matching
   bats <- node %>% 
-    rvest::html_node(css = "span.sidearm-roster-player-custom2") %>%
+    rvest::html_node(css = "span[class^=sidearm-roster-player-custom]") %>%
     rvest::html_text(trim = T)
   
   hometown <- node %>% 
