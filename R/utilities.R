@@ -5,6 +5,7 @@ joinStates <- function(roster_df, from = "AP", to = "USPS"){
                                             from,
                                             to),
                               by = c("State" = from)) %>% 
+    dplyr::mutate(!!enquo(to) := if_else(is.na(!!sym(to)),State,!!sym(to))) %>% 
     dplyr::select(-State) %>%
     dplyr::rename("State" = to)
   
@@ -19,7 +20,7 @@ separateName <- function(roster_df,
                          sep = "([[:alnum:]-' \\.]+[^ ]) +([[:alnum:]-']+(?: [JSr\\.I]+)?)$",
                          ...){
   roster <- tidyr::extract(roster_df,Name,
-                           into= c("F","L"),
+                           into= c("First","Last"),
                            regex = sep,
                            remove = FALSE,
                            ...)
