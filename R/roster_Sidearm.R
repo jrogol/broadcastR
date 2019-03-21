@@ -1,3 +1,12 @@
+getRoster_Sidearm <- function(teamName, url, sport) {
+  roster <- fetchRoster_Sidearm(teamName, url, sport)
+  
+  rosterClean <- cleanRoster_Sidearm(roster)
+  
+  return(rosterClean)
+}
+
+
 fetchPlayerNodes_Sidearm <- function(url) {
   page <- xml2::read_html(url)
   
@@ -69,13 +78,7 @@ fetchRoster_Sidearm <- function(teamName, url, sport){
 }
 
 
-getRoster_Sidearm <- function(teamName, url, sport) {
-  roster <- fetchRoster_Sidearm(teamName, url, sport)
-  
-  rosterClean <- cleanRoster_Sidearm(roster)
-  
-  return(rosterClean)
-}
+
 
 
 

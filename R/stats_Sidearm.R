@@ -1,7 +1,7 @@
 
 
 getStats_Sidearm <- function(statsURL, player_df, ...){
-  tables <- fetchStatsSidearm(statsURL,...)
+  tables <- fetchStats_Sidearm(statsURL,...)
   
   clean <- cleanStats_Sidearm(tables)
   
@@ -11,7 +11,7 @@ getStats_Sidearm <- function(statsURL, player_df, ...){
 }
 
 
-fetchStatsSidearm <- function(url){
+fetchStats_Sidearm <- function(url){
   page <- xml2::read_html(url)
   
   battingSection <- page %>% 
@@ -49,7 +49,7 @@ cleanStats_Sidearm <- function(listTable){
 cleanPlayer_SidearmStats <- function(table, col = "Player") {
   table[,col] <- stringr::str_trim(gsub("\\r\\n.*","",table[,col]))
   
-  table[,col] <- sub("([\\w-' ]+), ([\\w-' ]+)", "\\2 \\1", table[,col], perl = T)
+  table[,col] <- sub("([\\w-' \\.]+), ([\\w-' ]+)", "\\2 \\1", table[,col], perl = T)
   
   table <- dplyr::rename_all(table,toupper)
   
