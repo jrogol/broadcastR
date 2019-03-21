@@ -91,7 +91,8 @@ cleanRoster_Sidearm <- function(rosterTable){
                     sep = "/") %>% 
     tidyr::separate(hometown,
                     into = c("Hometown","State"),
-                    sep = ", +") %>% 
+                    sep = ", +",
+                    extra = "merge") %>% 
     dplyr::mutate(Weight = readr::parse_number(Weight),
                   Position1 = stringr::str_extract(Position1,"[A-Z123/]+$"))
   
