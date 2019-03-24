@@ -21,7 +21,8 @@ Imports:
     xml2,
     purrr,
     readr,
-    stringr
+    stringr,
+    rlang
 Suggests: 
     spelling
 Language: en-US

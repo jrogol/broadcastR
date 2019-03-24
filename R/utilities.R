@@ -7,7 +7,7 @@ joinStates <- function(roster_df, from = "AP", to = "USPS"){
                                             from,
                                             to),
                               by = c("State" = from)) %>% 
-    dplyr::mutate(!!enquo(to) := if_else(is.na(!!sym(to)),State,!!sym(to))) %>% 
+    dplyr::mutate(!!rlang::enquo(to) := dplyr::if_else(is.na(!!rlang::sym(to)),State,!!rlang::sym(to))) %>% 
     dplyr::select(-State) %>%
     dplyr::rename("State" = to)
   
