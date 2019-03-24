@@ -8,11 +8,13 @@ states <- dplyr::as_tibble(states) %>%
   dplyr::select(Name, USPS, AP, Other)
 
 
-# Clean "Other" to introduce NAs
+# Reshape to long, with multiple entries per state.
 states <- states %>% 
-  dplyr::mutate(Other = if_else(Other == "",
-                         as.character(NA),
-                         Other))
+  tidyr::gather("type","state",-USPS) %>% 
+  dplyr::mutate(state = strsplit(state, ", ")) %>% 
+  tidyr::unnest() %>%
+  dplyr::distinct(USPS, state)
+
 
 # Export for use
 usethis::use_data(states, overwrite = T)
