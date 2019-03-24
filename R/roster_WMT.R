@@ -30,19 +30,28 @@ fetchRoster_WMT <- function(teamName, url, sport){
 cleanRoster_WMT <- function(roster_df){
   # Split bats into bats/throws, hometown into hometown/state, remove lbs from weight.
   
-  player_df <- roster %>% 
-    tidyr::separate("B/T",
+  player_df <- roster_df %>% 
+    try(tidyr::separate("B/T",
                     into = c("Bats","Throws"),
-                    sep = "/") %>% 
+                    sep = "/")) %>% 
     tidyr::separate("Hometown",
                     into = c("Hometown","State"),
                     sep = ", +") %>% 
     dplyr::rename(Height = "Ht.",
                   Weight = "Wt.") %>% 
-    dplyr::mutate(Position1 = stringr::str_extract(Position,"[A-Z/123]+$"),
+    dplyr::mutate(Position1 = stringr::str_extract(Position,"[A-z/123]+$"),
                   Height = stringr::str_replace(Height, "(\\d)-(\\d+)","\\1'\\2\\\"")) %>%
     dplyr::select(-Position)
   
   return(dplyr::as_tibble(player_df))
 
+}
+
+
+getRoster_WMT <- function(teamName, url, sport){
+  roster <- fetchRoster_WMT(url)
+  
+  rosterClean <- cleanRoster_WMT(roster)
+  
+  return(rosterClean)
 }
