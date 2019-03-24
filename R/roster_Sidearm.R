@@ -1,3 +1,12 @@
+getRoster_Sidearm <- function(teamName, url, sport) {
+  roster <- fetchRoster_Sidearm(teamName, url, sport)
+  
+  rosterClean <- cleanRoster_Sidearm(roster)
+  
+  return(rosterClean)
+}
+
+
 fetchPlayerNodes_Sidearm <- function(url) {
   page <- xml2::read_html(url)
   
@@ -22,8 +31,9 @@ fetchPlayer_Sidearm <- function(node) {
     rvest::html_node(css = "p") %>%
     rvest::html_text(trim = T)
   
+  # Pitt uses custom1 - not custom2 - the syntax below enables fuzzy matching
   bats <- node %>% 
-    rvest::html_node(css = "span.sidearm-roster-player-custom2") %>%
+    rvest::html_node(css = "span[class^=sidearm-roster-player-custom]") %>%
     rvest::html_text(trim = T)
   
   hometown <- node %>% 
@@ -68,13 +78,7 @@ fetchRoster_Sidearm <- function(teamName, url, sport){
 }
 
 
-getRoster_Sidearm <- function(teamName, url, sport) {
-  roster <- fetchRoster_Sidearm(teamName, url, sport)
-  
-  rosterClean <- cleanRoster_Sidearm(roster)
-  
-  return(rosterClean)
-}
+
 
 
 
@@ -87,7 +91,8 @@ cleanRoster_Sidearm <- function(rosterTable){
                     sep = "/") %>% 
     tidyr::separate(hometown,
                     into = c("Hometown","State"),
-                    sep = ", +") %>% 
+                    sep = ", +",
+                    extra = "merge") %>% 
     dplyr::mutate(Weight = readr::parse_number(Weight),
                   Position1 = stringr::str_extract(Position1,"[A-Z123/]+$"))
   

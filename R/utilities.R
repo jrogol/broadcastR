@@ -1,3 +1,5 @@
+# H/T: https://community.rstudio.com/t/a-confusing-result-from-tidyeval-can-you-believe-it/13025/7
+
 joinStates <- function(roster_df, from = "AP", to = "USPS"){
   
   roster <-  dplyr::left_join(roster_df,
@@ -5,6 +7,7 @@ joinStates <- function(roster_df, from = "AP", to = "USPS"){
                                             from,
                                             to),
                               by = c("State" = from)) %>% 
+    dplyr::mutate(!!rlang::enquo(to) := dplyr::if_else(is.na(!!rlang::sym(to)),State,!!rlang::sym(to))) %>% 
     dplyr::select(-State) %>%
     dplyr::rename("State" = to)
   
@@ -15,14 +18,14 @@ joinStates <- function(roster_df, from = "AP", to = "USPS"){
 
 # The regEx looks for a space, followed by a (possibly) hypenated
 # word and an end line, e.g. the last word.
-separateName <- function(roster_df, sep = " +(?=[\\w-]+$)",...){
-  roster <- tidyr::separate(roster_df,Name, 
-                            into= c("First", "Last"),
-                            sep = sep,
-                            extra = "merge",
-                            merge = "right",
-                            remove = FALSE,
-                            ...)
+separateName <- function(roster_df,
+                         sep = "([[:alnum:]-' \\.]+[^ ]) +([[:alnum:]-']+(?: [JSr\\.I]+)?)$",
+                         ...){
+  roster <- tidyr::extract(roster_df,Name,
+                           into= c("First","Last"),
+                           regex = sep,
+                           remove = FALSE,
+                           ...)
   
   return(roster)
 }
