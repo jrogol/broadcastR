@@ -34,6 +34,7 @@ cleanRoster_WMT <- function(roster_df){
     try(tidyr::separate("B/T",
                     into = c("Bats","Throws"),
                     sep = "/")) %>% 
+    dplyr::rename_at(dplyr::vars(dplyr::starts_with("Pos")),~"Position") %>% 
     tidyr::separate("Hometown",
                     into = c("Hometown","State"),
                     sep = ", +") %>% 
@@ -49,7 +50,8 @@ cleanRoster_WMT <- function(roster_df){
 
 
 getRoster_WMT <- function(teamName, url, sport){
-  roster <- fetchRoster_WMT(url)
+  
+  roster <- fetchRoster_WMT(teamName, url, sport)
   
   rosterClean <- cleanRoster_WMT(roster)
   
