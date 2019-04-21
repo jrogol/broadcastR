@@ -47,7 +47,7 @@ cleanStats_StatCrew <- function(tableList) {
             )
   }
   tableList <- purrr::map(tableList, 
-               ~dplyr::mutate(Player = tolower(Player)))
+               ~dplyr::mutate(.,Player = tolower(Player)))
   
   batting <- cleanBatting_StatCrew(tableList$batting)
   
@@ -83,7 +83,7 @@ cleanBatting_StatCrew <- function(table) {
   # lastly, we'll need to filter out incomplete rows, the Total, and Opposition
   # Stats
   batting <- dplyr::filter(batting, !is.na(AB),
-                           !grepl("--|Totals?|Opponents?",PLAYER)) %>% 
+                           !grepl("--|totals?|opponents?",PLAYER)) %>% 
     dplyr::rename_at(dplyr::vars(-PLAYER),~paste0(.,"_BattingSeason"))
   
   return(batting)
@@ -97,7 +97,7 @@ cleanBatting_StatCrew <- function(table) {
 cleanPitching_StatCrew <- function(table) {
   pitching <- dplyr::rename_all(table, toupper) %>% 
     dplyr::filter(!is.na(ERA),
-           !grepl("--|Totals?|Opponents?",PLAYER)) %>% 
+           !grepl("--|totals?|opponents?",PLAYER)) %>% 
     tidyr::separate("W-L",
                     into = c("Win", "Loss"),
                     sep = "-") %>% 
