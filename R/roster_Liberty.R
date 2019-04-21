@@ -1,5 +1,3 @@
-link <- "http://www.liberty.edu/flames/index.cfm?PID=36959&teamID=1"
-
 getRoster_Liberty <- function(teamName, url, sport){
   roster <- fetchRoster_Liberty(teamName, url, sport)
   
@@ -35,7 +33,7 @@ fetchPlayer_Liberty <- function(node){
     rvest::html_text() %>% 
     purrr::reduce(paste, sep = " / ")
   
-  player <- bind_cols(Number = number,
+  player <- dplyr::bind_cols(Number = number,
                       Player = name,
                       details=details)
   return(player)

@@ -19,7 +19,7 @@ getRoster <- function(teamName, url, source = c("sidearm","wmt","neulion","prest
     sidearm = getRoster_Sidearm(teamName,url,sport),
     wmt = getRoster_WMT(teamName,url,sport),
     neulion = getRoster_NL(teamName,url,sport),
-    # presto = getRoster_Presto(teamName,url,sport),
+    presto = getRoster_Presto(teamName,url,sport),
     liberty = getRoster_Liberty(teamName,url,sport)
   )
   
