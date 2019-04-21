@@ -38,9 +38,21 @@ fetchStatCrew <- function(url, header = T, fill = T) {
 # cleanStats_StatCrew ----
 
 cleanStats_StatCrew <- function(tableList) {
+  
+  ## Add in name formatting - need conditionals!
+  
+  if(sum(grepl("([A-Z -']+), ([[:alpha:]\\. '-]+)",tableList$batting$Player)) > 0){
+        tableList <- purrr::map(tableList,
+          ~dplyr::mutate(.,Player = gsub("([A-Z -']+), ([[:alpha:]\\. '-]+)","\\2 \\1",Player))
+            )
+  }
+  tableList <- purrr::map(tableList, 
+               ~dplyr::mutate(Player = tolower(Player)))
+  
   batting <- cleanBatting_StatCrew(tableList$batting)
   
   pitching <- cleanPitching_StatCrew(tableList$pitching)
+  
   
   return(list(batting = batting, pitching = pitching))
   
@@ -94,7 +106,7 @@ cleanPitching_StatCrew <- function(table) {
                     sep = "-") %>% 
     # Take CG shutouts only, not combined ones.
     dplyr::mutate(SHO = stringr::str_extract(SHO,"^\\d+")) %>% 
-    dplyr::select(PLAYER, base::intersect(pitchingStats,names(.))) %>%  #broadcastR:::battingStats
+    dplyr::select(PLAYER, base::intersect(pitchingStats,names(.))) %>%
     dplyr::rename_at(dplyr::vars(-PLAYER),~paste0(.,"_PitchingSeason"))
   
   pitching <- dplyr::mutate(pitching, IP_PitchingSeason = format(IP_PitchingSeason, nsmall = 1))
@@ -106,6 +118,9 @@ cleanPitching_StatCrew <- function(table) {
 
 
 joinStatCrew <- function(player_df,tableList) {
+  
+  player_df$Name <- tolower(player_df$Name)
+  
   output <- dplyr::rename_all(player_df,stringr::str_to_title) %>% 
     dplyr::rename(FirstName = First,
                   LastName = Last) %>% 

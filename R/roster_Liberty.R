@@ -14,7 +14,7 @@ fetchRoster_Liberty <- function(teamName, url, sport){
   players <- rvest::html_node(page, "#roster") %>%
     rvest::html_children()
   
-  roster <- purrr::map_df(players, fetchPlayer_Liberty)
+  roster <- purrr::map_df(players, broadcastR:::fetchPlayer_Liberty)
   
   return(roster)
 }
@@ -34,7 +34,7 @@ fetchPlayer_Liberty <- function(node){
     purrr::reduce(paste, sep = " / ")
   
   player <- dplyr::bind_cols(Number = number,
-                      Player = name,
+                      Name = name,
                       details=details)
   return(player)
 }
