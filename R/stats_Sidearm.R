@@ -29,6 +29,8 @@ fetchStats_Sidearm <- function(url){
     rvest::html_table()
   
   table <- list(batting = batting, pitching = pitching)
+  
+  return(table)
 }
 
 cleanStats_Sidearm <- function(listTable){
