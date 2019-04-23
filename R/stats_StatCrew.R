@@ -119,6 +119,10 @@ cleanPitching_StatCrew <- function(table) {
 
 joinStatCrew <- function(player_df,tableList) {
   
+  tableList <- purrr::map(tableList,
+                          ~dplyr::mutate(.,PLAYER = tolower(PLAYER)))
+
+  
   player_df$Name <- tolower(player_df$Name)
   
   output <- dplyr::rename_all(player_df,stringr::str_to_title) %>% 
