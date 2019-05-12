@@ -1,6 +1,6 @@
 Package: broadcastR
 Title: Tools for ACC Network Broadcasts
-Version: 0.0.0.9009
+Version: 0.1.0
 Authors@R: 
     person(given = "James",
            family = "Rogol",
