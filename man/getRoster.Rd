@@ -4,11 +4,18 @@
 \alias{getRoster}
 \title{Title}
 \usage{
-getRoster(teamName, url, source = c("sidearm", "wmt", "neulion",
-  "presto", "liberty"), sport = "baseball")
+getRoster(
+  teamName,
+  url,
+  source = c("sidearm", "wmt", "neulion", "presto", "liberty"),
+  sport = c("baseball")
+)
 }
 \arguments{
 \item{sport}{}
+}
+\value{
+
 }
 \description{
 Title

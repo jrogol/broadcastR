@@ -17,6 +17,9 @@ exportStats(team, stats_df, na.str = "", output.dir = NULL, ...)
 
 \item{...}{}
 }
+\value{
+
+}
 \description{
 Title
 }

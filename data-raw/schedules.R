@@ -11,7 +11,7 @@ softball %>%
     stringr::str_detect(team, "Game \\d+") ~ "Virginia",
     TRUE ~ team)) %>% 
   filter(team != "Postseason") %>% 
-  write.csv("data/softballSchedule.csv")
+  write.csv("data-raw/softballSchedule.csv")
 
 baseball <- get_schedule("baseball",2020)
 
@@ -21,4 +21,6 @@ baseball %>%
     stringr::str_detect(team, "Game \\d+") ~ "Virginia",
     TRUE ~ team)) %>% 
   filter(team != "Postseason") %>% 
-  write.csv("data/baseballSchedule.csv")
+  write.csv("data-raw/baseballSchedule.csv")
+
+# Fill out with roster and stat links by hand.

@@ -15,6 +15,9 @@ getStats(team, statURL, roster_df, col.names = format, ...)
 
 \item{...}{}
 }
+\value{
+
+}
 \description{
 Title
 }

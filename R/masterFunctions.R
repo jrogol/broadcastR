@@ -9,7 +9,7 @@
 #' @export
 #'
 #' @examples
-getRoster <- function(teamName, url, source = c("sidearm","wmt","neulion","presto","liberty"), sport = "baseball") {
+getRoster <- function(teamName, url, source = c("sidearm","wmt","neulion","presto","liberty"), sport = c("baseball")) {
 
   source <- match.arg(source)
   sport <- match.arg(source)
