@@ -66,7 +66,11 @@ get_schedule <- function(team, year) {
   games %>% 
     purrr::map(schedule_details) %>% 
     purrr::reduce(bind_rows) %>% 
-    distinct()
+    distinct() %>% 
+    bind_rows(c(team = sprintf("%i Virginia %s",year, stringr::str_to_title(team)),
+                location = NA,
+                date = NA,
+                link = "http://www.virginiasports.com"))
 }
 
 
