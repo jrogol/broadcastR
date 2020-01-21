@@ -13,9 +13,6 @@ fetchRoster_WMT(teamName, url, sport)
 
 \item{sport}{}
 }
-\value{
-
-}
 \description{
 Title
 }

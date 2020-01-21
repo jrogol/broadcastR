@@ -30,6 +30,7 @@ schedule_details <- function(game_node) {
   # Game Location
   loc <- game_node %>%
     rvest::html_node(".sidearm-schedule-game-location") %>%
+    rvest::html_node("span:not([class])") %>% 
     rvest::html_text(trim = T) %>% 
     stringr::str_extract("(?<=(\\r[[:space:]])|^).+$") %>% 
     stringr::str_trim()
@@ -50,7 +51,7 @@ schedule_details <- function(game_node) {
 #' @export
 #'
 #' @examples
-get_schedule <- function(team, year) {
+getSchedule <- function(team, year) {
   # Year must be numeric
   if(!is.numeric(year)) stop("year must be numeric.")
   # team must be baseball or softball
