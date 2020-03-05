@@ -26,7 +26,7 @@ usethis::use_data(baseballTable, overwrite = T)
 softballTable <- readr::read_csv(here::here("data-raw/softballSchedule-COMPLETE.csv")) %>% 
   mutate(team = case_when(
     stringr::str_detect(team, "NCAA|ACC") ~ "Postseason",
-    stringr::str_detect(team, "Game \\d+") ~ "Virginia",
+    stringr::str_detect(team, "(Game \\d+)|(\\d{4})") ~ "Virginia",
     TRUE ~ team),
     date = stringr::str_squish(date)
   ) %>% 
