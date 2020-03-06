@@ -58,9 +58,14 @@ getRoster <- function(teamName, url, source, sport) {
     liberty = getRoster_Liberty(teamName,url,sport)
   )
   
+  # Cleaning Steps
   roster <- separateName(roster)
   
   roster <- joinStates(roster)
+  
+  roster <- encodeYear(roster)
+  
+  roster <- pitcherThrows(roster)
   
   return(roster)
 }
