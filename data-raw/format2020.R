@@ -46,8 +46,8 @@ template$header[1:15] <- "PlayerDemographics"
 # separated by an underscore.
 template <- template %>% 
   tidyr::fill(header) %>% 
-  mutate(title = paste(name,header,sep = "_"))
-
+  mutate(name = gsub("(?<=First|Last)[Nn]ame$","Name",name, perl = T),
+         title = paste(name,header,sep = "_"))
 # concatenating the existing column names:
 format <- pull(template, title)
 
