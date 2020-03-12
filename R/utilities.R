@@ -40,7 +40,7 @@ write_roster <- function(df,team,sport, ...){
 
 
 fetchStatSource <- function(statURL){
-  if (grepl("cumestats\\.aspx",statURL)) {
+  if (grepl("cumestats\\.aspx|/sports/.+/stats",statURL)) {
     "sidearm"
   } else if (grepl("teamcume|teamstat", statURL)) {
     "statcrew"
@@ -62,6 +62,24 @@ formatStats <- function(stats_df, col.names){
 }
 
 
+# Change years to numbers.
+encodeYear <- function(df, yrCol = "Year"){
+  dplyr::mutate(df,
+                !!rlang::enquo(yrCol) := dplyr::case_when(
+                  grepl("Fr",!!rlang::sym(yrCol)) ~ 1,
+                  grepl("Soph",!!rlang::sym(yrCol)) ~ 2,
+                  grepl("J.+r",!!rlang::sym(yrCol)) ~ 3,
+                  TRUE ~ 4))
+}
+
+# Change Pitching Throwing to RHP/LHP
+pitcherThrows <- function(df, posCol = "Position1", throwCol = "Throws") {
+    dplyr::mutate(df,
+                  !!rlang::enquo(throwCol) := dplyr::if_else(grepl("P",!!rlang::sym(posCol)),
+                                                             paste0(!!rlang::sym(throwCol),"HP"),
+                                                             !!rlang::sym(throwCol)
+                  ))
+  }
 
 
 # export_stats <- function(stats_df, na.str = "", output.dir = NULL, team, col.names = broadcastR:::xlnames, silent = F, ...){
