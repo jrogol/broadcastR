@@ -30,10 +30,10 @@ fetchRoster_WMT <- function(teamName, url, sport){
 cleanRoster_WMT <- function(roster_df){
   # Split bats into bats/throws, hometown into hometown/state, remove lbs from weight.
   
-  player_df <- roster_df %>% 
-    try(tidyr::separate("B/T",
-                    into = c("Bats","Throws"),
-                    sep = "/")) %>% 
+  player_df <- try(tidyr::separate(roster_df,
+                                   "B/T",
+                                   into = c("Bats", "Throws"),
+                                   sep = "/")) %>% 
     dplyr::rename_at(dplyr::vars(dplyr::starts_with("Pos")),~"Position") %>% 
     tidyr::separate("Hometown",
                     into = c("Hometown","State"),
