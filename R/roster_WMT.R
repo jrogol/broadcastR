@@ -12,8 +12,8 @@
 fetchRoster_WMT <- function(teamName, url, sport){
   page <- xml2::read_html(url)
   
-  players <- rvest::html_node(page, "table#roster_sort, table[class*='roster']")
-  
+  players <- rvest::html_node(page,
+                              "table#roster_sort, table[class*='roster'], table#players-table")  
   roster <- rvest::html_table(players)
   
   return(roster)
