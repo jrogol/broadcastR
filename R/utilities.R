@@ -83,6 +83,20 @@ pitcherThrows <- function(df, posCol = "Position1", throwCol = "Throws") {
   } else df
 }
 
+# Vectorized replacement of positions.
+abbreviatePosition <- function(pos) {
+  Position <- gsub("Catcher", "C", pos)
+  Position <- gsub("(In|O)(ut)?field", "\\1F", Position)
+  Position <- gsub("Utility", "UT", Position)
+  Position <- gsub("([RL])\\w+[ \\-]hand(ed)? Pitcher",
+                   "\\1HP",
+                   Position,
+                   ignore.case = T)
+  
+  toupper(Position)
+}
+
+
 
 # export_stats <- function(stats_df, na.str = "", output.dir = NULL, team, col.names = broadcastR:::xlnames, silent = F, ...){
 #   
