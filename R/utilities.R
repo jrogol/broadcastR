@@ -75,12 +75,13 @@ encodeYear <- function(df, yrCol = "Year"){
 
 # Change Pitching Throwing to RHP/LHP
 pitcherThrows <- function(df, posCol = "Position1", throwCol = "Throws") {
-    dplyr::mutate(df,
-                  !!rlang::enquo(throwCol) := dplyr::if_else(grepl("P",!!rlang::sym(posCol)),
-                                                             paste0(!!rlang::sym(throwCol),"HP"),
-                                                             !!rlang::sym(throwCol)
-                  ))
-  }
+  if(throwCol %in% names(df)) {
+    dplyr::mutate(df,!!rlang::enquo(throwCol) := dplyr::if_else(
+      grepl("P", !!rlang::sym(posCol)),
+      paste0(!!rlang::sym(throwCol), "HP"),!!rlang::sym(throwCol)
+    ))
+  } else df
+}
 
 
 # export_stats <- function(stats_df, na.str = "", output.dir = NULL, team, col.names = broadcastR:::xlnames, silent = F, ...){

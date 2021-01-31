@@ -34,7 +34,10 @@ cleanRoster_WMT <- function(roster_df){
                                  "B/T",
                                  into = c("Bats", "Throws"),
                                  sep = "/")
-}
+  } else {
+    roster_df[["Throws"]] <- NA_character_
+    roster_df[["Bats"]] <- NA_character_
+  }
   
   
   # Split bats into bats/throws, hometown into hometown/state, remove lbs from weight.
