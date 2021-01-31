@@ -15,14 +15,14 @@ fetchStats_Sidearm <- function(url){
   page <- xml2::read_html(url)
   
   battingSection <- page %>% 
-    rvest::html_node("section#individual-overall-batting")
+    rvest::html_node("section#individual-overall-batting, div#individual-batting")
   
   batting <- battingSection %>% 
     rvest::html_node("table") %>% 
     rvest::html_table()
   
   pitchingSection <- page %>% 
-    rvest::html_node("section#individual-overall-pitching")
+    rvest::html_node("section#individual-overall-pitching, div#individual-pitching")
   
   pitching <- pitchingSection %>% 
     rvest::html_node("table") %>% 
