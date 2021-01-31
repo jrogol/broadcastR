@@ -94,7 +94,9 @@ cleanRoster_Sidearm <- function(rosterTable){
                     sep = ", +",
                     extra = "merge") %>% 
     dplyr::mutate(Weight = readr::parse_number(Weight),
-                  Position1 = stringr::str_extract(Position1,"[A-Z123/]+$"))
+                  Position1 = gsub("\\w?IF","INF",
+                                   stringr::str_extract(Position1,
+                                                        "[A-Z123/]+$")))
   
   return(player_df)
 }
