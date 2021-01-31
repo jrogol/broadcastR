@@ -50,7 +50,8 @@ cleanRoster_WMT <- function(roster_df){
     dplyr::rename(Year = Class) %>% 
     # dplyr::rename(Height = "Ht.",
                   # Weight = "Wt.") %>% 
-    dplyr::mutate(Position1 = stringr::str_extract(Position,"[A-z/123]+$"),
+    dplyr::mutate(Position = abbreviatePosition(Position),
+                  Position1 = stringr::str_extract(Position,"[A-z/123]+$"),
                   Height = stringr::str_replace(Height, "(\\d)-(\\d+)","\\1'\\2\\\"")) %>%
     dplyr::select(-Position)
   
