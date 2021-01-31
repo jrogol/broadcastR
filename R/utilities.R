@@ -55,6 +55,7 @@ formatStats <- function(stats_df, col.names){
   col <- gsub("_PlayerDemographics","",col.names)
   
   output <- stats_df %>% 
+    dplyr::rename(Position= Position1) %>% 
     `is.na<-` (setdiff(col, names(.))) %>% 
     dplyr::select(col)
   
