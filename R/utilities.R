@@ -76,9 +76,11 @@ encodeYear <- function(df, yrCol = "Year"){
 # Change Pitching Throwing to RHP/LHP
 pitcherThrows <- function(df, posCol = "Position1", throwCol = "Throws") {
   if(throwCol %in% names(df)) {
-    dplyr::mutate(df,!!rlang::enquo(throwCol) := dplyr::if_else(
-      grepl("P", !!rlang::sym(posCol)),
-      paste0(!!rlang::sym(throwCol), "HP"),!!rlang::sym(throwCol)
+    dplyr::mutate(df,!!rlang::enquo(throwCol) := dplyr::case_when(
+      grepl("[RL]HP", !!rlang::sym(posCol)) ~ stringr::str_extract(!!rlang::sym(posCol),
+                                                                   "[RL]HP"),
+      grepl("P", !!rlang::sym(posCol)) ~ paste0(!!rlang::sym(throwCol), "HP"),
+      TRUE ~ !!rlang::sym(throwCol)
     ))
   } else df
 }
