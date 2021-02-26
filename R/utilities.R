@@ -40,7 +40,7 @@ write_roster <- function(df,team,sport, ...){
 
 
 fetchStatSource <- function(statURL){
-  if (grepl("stats/season|cumestats(\\.aspx|/season)|/sports/.+/stats(/\\d{0,4})?$",statURL)) {
+  if (grepl("stats/season|cumestats(\\.aspx|/season)?|/sports/.+/stats(/\\d{0,4})?$",statURL)) {
     "sidearm"
   } else if (grepl("teamcume|teamstat", statURL)) {
     "statcrew"
