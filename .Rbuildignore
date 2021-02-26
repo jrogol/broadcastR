@@ -1,5 +1,5 @@
   ^\.here$
-^Scratch$
+^.+Scratch$
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^data-raw$
