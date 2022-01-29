@@ -53,12 +53,12 @@ schedule_details <- function(game_node) {
 #' @examples
 getSchedule <- function(team, year) {
   # Year must be numeric
-  if(!is.numeric(year)) stop("year must be numeric.")
+  if(!is.character(year)) stop("year must be a string")
   # team must be baseball or softball
   team <- match.arg(tolower(team),
             c("baseball","softball"))
   
-  baseurl <- "https://virginiasports.com/sports/%s/schedule/%i"
+  baseurl <- "https://virginiasports.com/sports/%s/schedule/%s"
   teamurl <- sprintf(baseurl,team, year)
   
   games <- xml2::read_html(teamurl) %>% 
@@ -68,7 +68,7 @@ getSchedule <- function(team, year) {
     purrr::map(schedule_details) %>% 
     purrr::reduce(bind_rows) %>% 
     distinct() %>% 
-    bind_rows(c(team = sprintf("%i Virginia %s",year, stringr::str_to_title(team)),
+    dplyr::bind_rows(c(team = sprintf("%s Virginia %s",year, stringr::str_to_title(team)),
                 location = NA,
                 date = NA,
                 link = "http://www.virginiasports.com"))

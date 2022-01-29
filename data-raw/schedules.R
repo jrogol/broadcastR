@@ -1,7 +1,7 @@
 ## code to prepare baseball and softball schedule datasets goes here
 library(dplyr)
 
-softball <- broadcastR:::getSchedule("softball",2020)
+softball <- broadcastR:::getSchedule("softball","2021-22")
 
 softball %>% 
   mutate(team = case_when(
@@ -11,7 +11,7 @@ softball %>%
   filter(team != "Postseason") %>% 
   write.csv("data-raw/softballSchedule.csv")
 
-baseball <- broadcastR:::getSchedule("baseball",2020)
+baseball <- broadcastR:::getSchedule("baseball","2021-22")
 
 baseball %>% 
   mutate(team = case_when(
