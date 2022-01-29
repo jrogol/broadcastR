@@ -8,13 +8,11 @@
 #' @examples
 schedule_details <- function(game_node) {
   # Team name
-  opp <- game_node %>%
-    rvest::html_node(".sidearm-schedule-game-opponent-text") %>%
-    rvest::html_node("a") %>%
-    rvest::html_text() %>% 
-    stringr::str_remove_all("\\*")
+  opp <- game_node %>% 
+    rvest::html_node(".schedule__item-state") %>% 
+    rvest::html_text(trim = T)
   
-  # Team website
+  # Team website - not present in 21-22 site
   link <- game_node %>%
     rvest::html_node(".sidearm-schedule-game-opponent-name") %>%
     rvest::html_node("a") %>%
@@ -22,14 +20,15 @@ schedule_details <- function(game_node) {
   
   # Game Date
   date <- game_node %>%
-    rvest::html_node(".sidearm-schedule-game-opponent-date") %>%
-    rvest::html_text("span") %>%
-    stringr::str_squish() %>% 
-    stringr::str_extract(".+?(?=[[:space:]]\\()")
+    rvest::html_node("time") %>% 
+    rvest::html_text() %>% 
+    as.Date("%a %b %e") %>% 
+    format()
+  
   
   # Game Location
   loc <- game_node %>%
-    rvest::html_node(".sidearm-schedule-game-location") %>%
+    rvest::html_node(".schedule__item-place") %>%
     rvest::html_node("span:not([class])") %>% 
     rvest::html_text(trim = T) %>% 
     stringr::str_extract("(?<=(\\r[[:space:]])|^).+$") %>% 
@@ -58,15 +57,16 @@ getSchedule <- function(team, year) {
   team <- match.arg(tolower(team),
             c("baseball","softball"))
   
-  baseurl <- "https://virginiasports.com/sports/%s/schedule/%s"
+  baseurl <- "https://virginiasports.com/sports/%s/schedule/%s/"
   teamurl <- sprintf(baseurl,team, year)
   
   games <- xml2::read_html(teamurl) %>% 
-    rvest::html_nodes("div.sidearm-schedule-game-row")
+    #pull in home games only!
+    rvest::html_nodes("div.schedule__list-item.home")
   
   games %>% 
     purrr::map(schedule_details) %>% 
-    purrr::reduce(bind_rows) %>% 
+    purrr::reduce(dplyr::bind_rows) %>% 
     distinct() %>% 
     dplyr::bind_rows(c(team = sprintf("%s Virginia %s",year, stringr::str_to_title(team)),
                 location = NA,
