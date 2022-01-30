@@ -33,9 +33,9 @@ cleanRoster_WMT <- function(roster_df){
   player_df <- try(tidyr::separate(roster_df,
                                    `B/T`,
                                    into = c("Bats", "Throws"),
-                                   sep = "/")) %>%
+                                   sep = "[/-]")) %>%
     rename_all(stringr::str_to_title) %>% 
-    dplyr::rename_at(dplyr::vars(dplyr::starts_with("Pos"),ignore.case = T),  ~ "Position") %>%
+    dplyr::rename_at(dplyr::vars(dplyr::starts_with("Pos",ignore.case = T)),  ~ "Position") %>%
     tidyr::separate("Hometown",
                     into = c("Hometown", "State"),
                     sep = ", +") %>%
