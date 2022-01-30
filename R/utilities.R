@@ -19,7 +19,7 @@ joinStates <- function(roster_df, from = "state", to = "USPS"){
 # The regEx looks for a space, followed by a (possibly) hypenated
 # word and an end line, e.g. the last word.
 separateName <- function(roster_df,
-                         sep = "([[:alnum:]-' \\.]+[^ ]) +([[:alnum:]-']+(?:,? [JSr\\.I]+)?)$",
+                         sep = "([[:alnum:]\\-' \\.]+[^ ]) +([[:alnum:]\\-']+(?:,? [JSr\\.I]+)?)$",
                          ...){
   roster <- tidyr::extract(roster_df,Name,
                            into= c("First","Last"),
@@ -63,13 +63,17 @@ formatStats <- function(stats_df, col.names){
 
 
 # Change years to numbers.
-encodeYear <- function(df, yrCol = "Year"){
+encodeYear <- function(df, yrCol = "Year") {
   dplyr::mutate(df,
-                !!rlang::enquo(yrCol) := dplyr::case_when(
-                  grepl("Fr",!!rlang::sym(yrCol)) ~ 1,
-                  grepl("Soph",!!rlang::sym(yrCol)) ~ 2,
-                  grepl("J.+r",!!rlang::sym(yrCol)) ~ 3,
-                  TRUE ~ 4))
+                dplyr::across(
+                  dplyr::matches("Year|Class"),
+                  ~ case_when(
+                    grepl("Fr", .) ~ 1,
+                    grepl("Soph", .) ~ 2,
+                    grepl("J.+r", .) ~ 3,
+                    TRUE ~ 4
+                  )
+                ))
 }
 
 # Change Pitching Throwing to RHP/LHP
