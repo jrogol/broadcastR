@@ -17,7 +17,7 @@ getData <- function(teamName,rosterURL,statURL, source, sport,
   source <- match.arg(source,
                       c("sidearm","wmt","neulion","presto","liberty"))
   sport <- match.arg(sport,
-                     c("baseball"))
+                     c("baseball","softball"))
   
   roster_df <- getRoster(teamName, rosterURL,source, sport)
   
@@ -47,7 +47,7 @@ getRoster <- function(teamName, url, source, sport) {
   source <- match.arg(source,
                       c("sidearm","wmt","neulion","presto","liberty"))
   sport <- match.arg(sport,
-                     c("baseball"))
+                     c("baseball","softball"))
   # Error Handling for url
 
   roster <- switch(source,
