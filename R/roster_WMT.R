@@ -34,6 +34,7 @@ cleanRoster_WMT <- function(roster_df){
                                    `B/T`,
                                    into = c("Bats", "Throws"),
                                    sep = "/")) %>%
+    rename_all(stringr::str_to_title) %>% 
     dplyr::rename_at(dplyr::vars(dplyr::starts_with("Pos"),ignore.case = T),  ~ "Position") %>%
     tidyr::separate("Hometown",
                     into = c("Hometown", "State"),
