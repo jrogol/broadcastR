@@ -38,8 +38,8 @@ cleanRoster_WMT <- function(roster_df){
     tidyr::separate("Hometown",
                     into = c("Hometown", "State"),
                     sep = ", +") %>%
-    # dplyr::rename(Height = "Ht.",
-    # Weight = "Wt.") %>%
+    dplyr::rename(dplyr::any_of(c(Height = "Ht.",
+                                  Weight = "Wt."))) %>% 
     dplyr::mutate(
       Position1 = stringr::str_extract(Position, "[A-z/123]+$"),
       Height = stringr::str_replace(Height, "(\\d)-(\\d+)", "\\1'\\2\\\"")
