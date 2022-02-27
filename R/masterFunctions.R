@@ -45,7 +45,7 @@ getData <- function(teamName,rosterURL,statURL, source, sport,
 getRoster <- function(teamName, url, source, sport) {
 
   source <- match.arg(source,
-                      c("sidearm","wmt","neulion","presto","liberty"))
+                      c("sidearm","wmt","liberty"))
   sport <- match.arg(sport,
                      c("baseball","softball"))
   # Error Handling for url
@@ -53,8 +53,8 @@ getRoster <- function(teamName, url, source, sport) {
   roster <- switch(source,
     sidearm = getRoster_Sidearm(teamName,url,sport),
     wmt = getRoster_WMT(teamName,url,sport),
-    neulion = getRoster_NL(teamName,url,sport),
-    presto = getRoster_Presto(teamName,url,sport),
+    # neulion = getRoster_NL(teamName,url,sport),
+    # presto = getRoster_Presto(teamName,url,sport),
     liberty = getRoster_Liberty(teamName,url,sport)
   )
   
@@ -65,7 +65,7 @@ getRoster <- function(teamName, url, source, sport) {
   
   roster <- encodeYear(roster)
   
-  roster <- pitcherThrows(roster)
+  roster <- purrr::possibly(pitcherThrows, otherwise = roster)(roster)
   
   return(roster)
 }
