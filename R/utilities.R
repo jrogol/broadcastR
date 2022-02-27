@@ -76,6 +76,19 @@ encodeYear <- function(df, yrCol = "Year") {
                 ))
 }
 
+
+# POsition abbreviations
+cleanPosition <- function(pos){
+  pos %>% 
+    tolower() %>% 
+    stringr::str_remove_all("(ield)|[ai]tcher|(?<=o)ut|(?<=b)ase|(?<=ut)i(?=lity)|ity|(?<=\\d)([nr]d|st) ") %>% 
+    stringr::str_replace_all("first\\s","1") %>% 
+    stringr::str_replace("second\\s","2") %>% 
+    stringr::str_replace("third\\s","3") %>% 
+    toupper()
+}
+
+
 # Change Pitching Throwing to RHP/LHP
 pitcherThrows <- function(df, posCol = "Position1", throwCol = "Throws") {
     dplyr::mutate(df,
