@@ -1,4 +1,4 @@
-getRoster_Liberty <- function(url){
+getRoster_Liberty <- function(teamName,url,sport){
   roster <- fetchRoster_Liberty(url)
   
   cleaned <- cleanRoster_Liberty(roster)
