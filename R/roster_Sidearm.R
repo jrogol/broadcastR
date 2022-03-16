@@ -60,7 +60,7 @@ fetchPlayer_Sidearm <- function(node) {
   # Add proper formatting for columns
   player <- dplyr::bind_cols(Number = readr::parse_number(number),
                              Name = name,
-                             Position1 = position,
+                             Position = position,
                              bats = bats,
                              hometown = hometown,
                              Height = height,
