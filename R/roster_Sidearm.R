@@ -28,8 +28,11 @@ fetchPlayer_Sidearm <- function(node) {
     rvest::html_text(trim = T)
   
   name <- node %>% 
-    rvest::html_node(css = "p") %>%
-    rvest::html_text(trim = T)
+    rvest::html_elements(css = "p,h3") %>%
+    rvest::html_text(trim = T) %>% 
+    (function(txt){
+      txt[which.max(stringr::str_length(txt))]
+    })
   
   # Pitt uses custom1 - not custom2 - the syntax below enables fuzzy matching
   bats <- node %>% 
