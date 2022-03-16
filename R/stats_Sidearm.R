@@ -49,9 +49,9 @@ cleanStats_Sidearm <- function(listTable){
 
 
 cleanPlayer_SidearmStats <- function(table, col = "Player") {
-  table[,col] <- stringr::str_trim(gsub("\\r\\n.*","",table[,col]))
+  table[[col]] <- stringr::str_trim(gsub("\\r\\n.*","",table[[col]]))
   
-  table[,col] <- sub("([\\w-' \\.]+), ([\\w-' ]+)", "\\2 \\1", table[,col], perl = T)
+  table[[col]] <- sub("([\\w\\-' \\.]+), ([\\w\\-' ]+)", "\\2 \\1", table[[col]], perl = T)
   
   table <- dplyr::rename_all(table,toupper)
   
