@@ -44,25 +44,23 @@ cleanRoster_Liberty <- function(roster,
                                              wt = "\\d{3}",
                                              bt = "[SRL] - [RL]")) {
   roster %>%
-    bind_cols(map(attrs,
-                  function(attr) {
-                    roster$playerDetails %>%
-                      str_extract(attr)
-                  }) %>%
-                bind_cols()) %>%
-    select(-playerDetails) %>%
-    rename_with( ~ "Name", one_of("title")) %>%
-    rename_with( ~ "Number", one_of("jersey")) %>%
-    mutate(across(any_of("Number"),as.integer),
-           Name = gsub("[[:space:]]+"," ",Name)) %>% 
-    separate(
+    dplyr::bind_cols(purrr::map(attrs,
+                                function(attr) {
+                                  roster$playerDetails %>%
+                                    stringr::str_extract(attr)
+                                }) %>%
+                       dplyr::bind_cols()) %>%
+    dplyr::select(-playerDetails) %>%
+    dplyr::rename_with( ~ "Name", dplyr::one_of("title")) %>%
+    dplyr::rename_with( ~ "No", dplyr::one_of("jersey")) %>%
+    tidyr::separate(
       col = "Other",
       into = c("Year", "Hometown", "PriorSchool"),
       sep = "[[:space:]]{2,}/[[:space:]]+"
     ) %>%
-    separate(Hometown,
-             into = c("Hometown", "State"),
-             sep = ", ") %>%
-    separate(bt,
-             into = c("Bats", "Throws"))
+    tidyr::separate(Hometown,
+                    into = c("Hometown", "State"),
+                    sep = ", ") %>%
+    tidyr::separate(bt,
+                    into = c("Bats", "Throws"))
 }
