@@ -1,5 +1,5 @@
-getRoster_Liberty <- function(teamName, url, sport){
-  roster <- fetchRoster_Liberty(teamName, url, sport)
+getRoster_Liberty <- function(url){
+  roster <- fetchRoster_Liberty(url)
   
   cleaned <- cleanRoster_Liberty(roster)
   
@@ -8,53 +8,61 @@ getRoster_Liberty <- function(teamName, url, sport){
 
 
 
-fetchRoster_Liberty <- function(teamName, url, sport){
+fetchRoster_Liberty <- function(url){
   page <- xml2::read_html(url)
   
-  players <- rvest::html_node(page, "#roster") %>%
-    rvest::html_children()
+  players <- rvest::html_elements(page,".rosterExcerpt")
   
-  roster <- purrr::map_df(players, broadcastR:::fetchPlayer_Liberty)
-  
-  return(roster)
+  roster <- players %>% 
+    purrr::map(fetchPlayer_Liberty) %>% 
+    dplyr::bind_rows()
 }
 
 
-
-fetchPlayer_Liberty <- function(node){
-  name <- node %>%
-    rvest::html_node("h3") %>%
-    rvest::html_text()
-  number <- node %>%
-    rvest::html_node("span.jersey") %>%
-    rvest::html_text()
-  details <- node %>%
-    rvest::html_nodes("span:not(span.jersey)") %>%
-    rvest::html_text() %>% 
-    purrr::reduce(paste, sep = " / ")
+fetchPlayer_Liberty <- function(l){
+  nodes <- rvest::html_elements(l,"h3, p")
   
-  player <- dplyr::bind_cols(Number = number,
-                      Name = name,
-                      details=details)
-  return(player)
+  headers <- rvest::html_attr(nodes,"class")
+  
+  headers <- stringr::str_extract(headers, "[[:alpha:]]+$")
+  
+  headers[is.na(headers)] <- "Other"
+  
+  text <- rvest::html_text(nodes, trim = T)
+  
+  names(text) <- headers
+  
+  text
 }
-
 
 
 # Cleaning ----------------------------------------------------------------
 
-
-cleanRoster_Liberty <- function(rosterTable){
-  # extract details, make number numeric.
-  rosterTable %>% 
-    dplyr::mutate(Number = as.integer(Number),
-                Bats = as.character(NA),
-                Throws = as.character(NA),
-                Position1 = stringr::str_extract(details,"^[[:alnum:]/]+"),
-                Height = stringr::str_extract(details, "\\d' \\d{1,2}\""),
-                Weight = stringr::str_extract(details, "\\d{2,3}(?= lbs)"),
-                Year = stringr::str_extract(details, "(?<= / )[A-z- ]+(?= / )"),
-                Hometown = stringr::str_extract(details, "(?<= / )[[:alnum:]- \\.]+(?=, |$)"),
-                State = stringr::str_extract(details, "(?<=, ).*$")) %>% 
-    dplyr::select(-details)
+cleanRoster_Liberty <- function(roster,
+                                attrs = list(Position1 = "^[^[:space:]]+",
+                                             ht = "\\d-\\d{1,2}",
+                                             wt = "\\d{3}",
+                                             bt = "[SRL] - [RL]")) {
+  roster %>%
+    bind_cols(map(attrs,
+                  function(attr) {
+                    roster$playerDetails %>%
+                      str_extract(attr)
+                  }) %>%
+                bind_cols()) %>%
+    select(-playerDetails) %>%
+    rename_with( ~ "Name", one_of("title")) %>%
+    rename_with( ~ "Number", one_of("jersey")) %>%
+    mutate(across(any_of("Number"),as.integer),
+           Name = gsub("[[:space:]]+"," ",Name)) %>% 
+    separate(
+      col = "Other",
+      into = c("Year", "Hometown", "PriorSchool"),
+      sep = "[[:space:]]{2,}/[[:space:]]+"
+    ) %>%
+    separate(Hometown,
+             into = c("Hometown", "State"),
+             sep = ", ") %>%
+    separate(bt,
+             into = c("Bats", "Throws"))
 }
