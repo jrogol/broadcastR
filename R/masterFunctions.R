@@ -65,6 +65,8 @@ getRoster <- function(teamName, url, source, sport) {
   
   roster <- purrr::possibly(pitcherThrows, otherwise = roster)(roster)
   
+  roster <- dplyr::mutate(roster,Name = stringr::str_squish(Name))
+  
   return(roster)
 }
 
