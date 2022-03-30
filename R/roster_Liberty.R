@@ -52,7 +52,7 @@ cleanRoster_Liberty <- function(roster,
                        dplyr::bind_cols()) %>%
     dplyr::select(-playerDetails) %>%
     dplyr::rename_with( ~ "Name", dplyr::one_of("title")) %>%
-    dplyr::rename_with( ~ "No", dplyr::one_of("jersey")) %>%
+    dplyr::rename_with( ~ "Number", dplyr::one_of("jersey")) %>%
     tidyr::separate(
       col = "Other",
       into = c("Year", "Hometown", "PriorSchool"),
