@@ -20,15 +20,18 @@ fetchPlayerNodes_Sidearm <- function(url) {
 # These should be moved into their own, smaller functions....
 fetchPlayer_Sidearm <- function(node) {
   position <- node %>% 
-    rvest::html_node(css = "span.text-bold") %>%
+    rvest::html_node(css = "span.text-bold,
+                   span.sidearm-roster-list-item-position") %>%
     rvest::html_text(trim = T)
   
   number <- node %>% 
-    rvest::html_node(css = "span.sidearm-roster-player-jersey-number") %>%
+    rvest::html_node(css = "span.sidearm-roster-player-jersey-number,
+                   div.sidearm-roster-list-item-photo-number") %>%
     rvest::html_text(trim = T)
   
   name <- node %>% 
-    rvest::html_elements(css = "p,h3") %>%
+    rvest::html_elements(css = "p,h3,
+                   div.sidearm-roster-player-name") %>%
     rvest::html_text(trim = T) %>% 
     (function(txt){
       txt[which.max(stringr::str_length(txt))]
@@ -36,25 +39,29 @@ fetchPlayer_Sidearm <- function(node) {
   
   # Pitt uses custom1 - not custom2 - the syntax below enables fuzzy matching
   bats <- node %>% 
-    rvest::html_node(css = "span[class^=sidearm-roster-player-custom]") %>%
+    rvest::html_node(css = "span[class^=sidearm-roster-player-custom],
+                     span[class^=sidearm-roster-list-item-custom]") %>%
     rvest::html_text(trim = T)
   
   hometown <- node %>% 
-    rvest::html_node(css = "span.sidearm-roster-player-hometown") %>%
+    rvest::html_node(css = "span.sidearm-roster-player-hometown,
+                   div.sidearm-roster-list-item-hometown") %>%
     rvest::html_text(trim = T)
   
   height <- node %>% 
-    rvest::html_node(css = "span.sidearm-roster-player-height") %>%
+    rvest::html_node(css = "span.sidearm-roster-player-height,
+                   span.sidearm-roster-list-item-height") %>%
     rvest::html_text(trim = T)
   
   weight <- node %>% 
-    rvest::html_node(css = "span.sidearm-roster-player-weight") %>%
+    rvest::html_node(css = "span.sidearm-roster-player-weight,
+                   span.sidearm-roster-list-item-weight") %>%
     rvest::html_text(trim = T)
   
   year <- node %>% 
-    rvest::html_nodes(css = "span.sidearm-roster-player-academic-year:not(.hide-on-large)") %>%
+    rvest::html_nodes(css = "span.sidearm-roster-player-academic-year:not(.hide-on-large),
+                           span.sidearm-roster-list-item-year") %>%
     rvest::html_text(trim = T)
-  
   
   
   # Add proper formatting for columns
@@ -96,7 +103,8 @@ cleanRoster_Sidearm <- function(rosterTable){
                     into = c("Hometown","State"),
                     sep = ", +",
                     extra = "merge") %>% 
-    dplyr::mutate(Weight = readr::parse_number(Weight),
+    dplyr::mutate(dplyr::across(where(is.character) & "Weight",
+                                readr::parse_number),
                   Position = stringr::str_extract(Position,"[A-Z123/]+$"))
   
   return(player_df)
