@@ -70,7 +70,7 @@ encodeYear <- function(df, yrCol = "Year") {
   dplyr::mutate(df,
                 dplyr::across(
                   dplyr::matches("Year|Class"),
-                  ~ case_when(
+                  ~ dplyr::case_when(
                     grepl("Fr", .) ~ 1,
                     grepl("Soph", .) ~ 2,
                     grepl("J.+r", .) ~ 3,
