@@ -27,6 +27,9 @@ separateName <- function(roster_df,
                            remove = FALSE,
                            ...)
   
+  roster$First <- stringr::str_trim(roster$First)
+  roster$Last <- stringr::str_trim(roster$Last)
+  
   return(roster)
 }
 
