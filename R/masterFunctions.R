@@ -67,6 +67,8 @@ getRoster <- function(teamName, url, source, sport) {
   
   roster <- dplyr::mutate(roster,Name = stringr::str_squish(Name))
   
+  roster <- dplyr::mutate(roster, Weight = readr::parse_number(Weight))
+  
   return(roster)
 }
 
