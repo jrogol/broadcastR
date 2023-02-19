@@ -67,7 +67,13 @@ getRoster <- function(teamName, url, source, sport) {
   
   roster <- dplyr::mutate(roster,Name = stringr::str_squish(Name))
   
-  roster <- dplyr::mutate(roster, Weight = readr::parse_number(Weight))
+  if(any(names(roster) == 'Weight') & is.character(roster$Weight)){
+    roster <- dplyr::mutate(roster, Weight = readr::parse_number(Weight))
+  }
+  
+  if(any(grepl("^Y(ea)?r\\.?",names(roster)))){
+    names(roster)[grepl("^Y(ea)?r\\.?",names(roster))] <- "Class"
+  }
   
   return(roster)
 }
