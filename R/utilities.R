@@ -66,10 +66,10 @@ formatStats <- function(stats_df, col.names){
 
 
 # Change years to numbers.
-encodeYear <- function(df, yrCol = "Year") {
+encodeYear <- function(df) {
   dplyr::mutate(df,
                 dplyr::across(
-                  dplyr::matches("Y[ea]?r|Class"),
+                  dplyr::matches("Y(ea)?r|Class"),
                   ~ dplyr::case_when(
                     grepl("Fr", .) ~ 1,
                     grepl("Soph", .) ~ 2,
