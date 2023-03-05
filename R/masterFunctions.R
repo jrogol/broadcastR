@@ -61,6 +61,10 @@ getRoster <- function(teamName, url, source, sport) {
   
   roster <- joinStates(roster)
   
+  if(any(grepl("^Y(ea)?r\\.?",names(roster)))){
+    names(roster)[grepl("^Y(ea)?r\\.?",names(roster))] <- "Class"
+  }
+  
   roster <- encodeYear(roster)
   
   roster <- purrr::possibly(pitcherThrows, otherwise = roster)(roster)
@@ -69,10 +73,6 @@ getRoster <- function(teamName, url, source, sport) {
   
   if(any(names(roster) == 'Weight') & is.character(roster$Weight)){
     roster <- dplyr::mutate(roster, Weight = readr::parse_number(Weight))
-  }
-  
-  if(any(grepl("^Y(ea)?r\\.?",names(roster)))){
-    names(roster)[grepl("^Y(ea)?r\\.?",names(roster))] <- "Class"
   }
   
   return(roster)
