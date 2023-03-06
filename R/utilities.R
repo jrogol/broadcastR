@@ -53,7 +53,7 @@ fetchStatSource <- function(statURL){
 }
 
 
-formatStats <- function(stats_df, col.names){
+formatStats <- function(stats_df, col.names = format){
   
   col <- gsub("_PlayerDemographics","",col.names)
   
