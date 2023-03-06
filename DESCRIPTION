@@ -22,7 +22,12 @@ Imports:
     purrr,
     readr,
     stringr,
-    rlang
+    rlang,
+    pdftools,
+    googlesheets4,
+    binman,
+    wdman,
+    RSelenium
 Suggests: 
     spelling
 Language: en-US
