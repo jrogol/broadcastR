@@ -109,8 +109,8 @@ getStats <- function(team, statURL, roster_df, col.names = format ,...) {
   source <- fetchStatSource(statURL)
   
   stats <- switch(source,
-         sidearm = getStats_Sidearm(statURL, roster_df),
-         statcrew = getStats_StatCrew(statURL, roster_df),
+         sidearm = getStats_Sidearm(statURL),
+         statcrew = getStats_StatCrew(statURL),
          d1 = getStats_D1(statURL, roster_df))
   
   return(stats)

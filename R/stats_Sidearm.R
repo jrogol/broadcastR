@@ -1,6 +1,6 @@
 
 
-getStats_Sidearm <- function(statsURL, player_df, ...){
+getStats_Sidearm <- function(statsURL, ...){
   tables <- fetchStats_Sidearm(statsURL,...)
   
   clean <- cleanStats_Sidearm(tables)
