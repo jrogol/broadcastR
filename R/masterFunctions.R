@@ -29,7 +29,7 @@ getData <- function(teamName,
   stats_df <- getStats(teamName, statURL, roster_df, source = source)
   
   if (source == "d1") {
-    joined <- formatStats(stats_df, col.names))
+    joined <- formatStats(stats_df, col.names)
 } else {
   joined <- joinStatCrew(roster_df, stats_df)
   
