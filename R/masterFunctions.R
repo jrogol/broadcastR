@@ -11,24 +11,38 @@
 #'
 #' @examples
 
-getData <- function(teamName,rosterURL,statURL, source, sport, 
+getData <- function(teamName,
+                    rosterURL,
+                    statURL,
+                    source,
+                    sport,
                     output.dir = NULL,
-                    exportRoster = F, ...) {
+                    exportRoster = F,
+                    ...) {
   source <- match.arg(source,
-                      c("sidearm","wmt","neulion","presto","liberty"))
+                      c("sidearm", "wmt", "neulion", "presto", "liberty"))
   sport <- match.arg(sport,
-                     c("baseball","softball"))
+                     c("baseball", "softball"))
   
-  roster_df <- getRoster(teamName, rosterURL,source, sport)
+  roster_df <- getRoster(teamName, rosterURL, source, sport)
   
-  stats_df <- getStats(teamName,statURL,roster_df,source = source)
+  stats_df <- getStats(teamName, statURL, roster_df, source = source)
   
-  if(export){
+  if (source == "d1") {
+    joined <- formatStats(stats_df, col.names))
+} else {
+  joined <- joinStatCrew(roster_df, stats_df)
+  
+}
+  
+  stats_out <- formatStats(joined, col.names)
+  
+  if (exportRoster) {
     exportRoster(teamName, roster_df, output.dir = output.dir)
   }
   
-  exportStats(teamName, stats_df, output.dir = output.dir)
-}
+  exportStats(teamName, stats_out, output.dir = output.dir)
+  }
 
 
 #' Title
@@ -99,7 +113,7 @@ getStats <- function(team, statURL, roster_df, col.names = format ,...) {
          statcrew = getStats_StatCrew(statURL, roster_df),
          d1 = getStats_D1(statURL, roster_df))
   
-  return(formatStats(stats, col.names))
+  return(stats)
 }
 
 

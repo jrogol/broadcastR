@@ -5,9 +5,7 @@ getStats_Sidearm <- function(statsURL, player_df, ...){
   
   clean <- cleanStats_Sidearm(tables)
   
-  joined <- joinStatCrew(player_df, clean)
-  
-  return(joined)
+  return(clean)
 }
 
 

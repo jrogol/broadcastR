@@ -3,9 +3,7 @@ getStats_StatCrew <- function(statsURL, player_df, ...) {
   
   clean <- cleanStats_StatCrew(data)
   
-  joined <- joinStatCrew(player_df,clean)
-  
-  return(joined)
+  return(clean)
 }
 
 
