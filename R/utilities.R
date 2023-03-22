@@ -19,7 +19,7 @@ joinStates <- function(roster_df, from = "state", to = "USPS"){
 # The regEx looks for a space, followed by a (possibly) hypenated
 # word and an end line, e.g. the last word.
 separateName <- function(roster_df,
-                         sep = "([[:alnum:]\\-' \\.]+[^ ]) +([[:alnum:]\\-']+(?:,? [JSr\\.I]+)?)$",
+                         sep = "([[:alnum:]\\-' \\.À-ÿ]+[^ ]) +([[:alnum:]À-ÿ\\-']+(?:,? [JSr\\.I]+)?)$",
                          ...){
   roster <- tidyr::extract(roster_df,Name,
                            into= c("First","Last"),
