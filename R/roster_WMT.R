@@ -41,7 +41,8 @@ cleanRoster_WMT <- function(roster_df) {
                     into = c("Hometown", "State"),
                     sep = ", +") %>%
     dplyr::rename(dplyr::any_of(c(Height = "Ht.",
-                                  Weight = "Wt."))) %>%
+                                  Weight = "Wt.",
+                                  Number = "No."))) %>%
     dplyr::mutate(
       Position = stringr::str_extract(Position, "[A-z/123]+$"),
       Height = stringr::str_replace(Height, "(\\d)-(\\d+)", "\\1'\\2\\\"")
