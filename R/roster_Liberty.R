@@ -11,6 +11,24 @@ getRoster_Liberty <- function(teamName,url,sport){
 fetchRoster_Liberty <- function(url){
   page <- xml2::read_html(url)
   
+  if(is.na(rvest::html_element(page,".rosterExcerpt"))){
+    message("Loading Page Found, Starting Selenium")
+    
+    serv <- startChromeServer()
+    
+    browser <- startSelenium(serv,headless = T)
+    
+    browser$open(silent = T)
+    
+    browser$navigate(url)
+    Sys.sleep(2)
+    
+    page <- rvest::read_html(browser$getPageSource()[[1]])
+    
+    browser$close()
+    
+    serv$stop()
+  }
   players <- rvest::html_elements(page,".rosterExcerpt")
   
   roster <- players %>% 
@@ -42,7 +60,7 @@ cleanRoster_Liberty <- function(roster,
                                 attrs = list(Position1 = "^[^[:space:]]+",
                                              ht = "\\d-\\d{1,2}",
                                              wt = "\\d{3}",
-                                             bt = "[SRL] - [RL]")) {
+                                             bt = "[SRL] ?- ?[RL]")) {
   roster %>%
     dplyr::bind_cols(purrr::map(attrs,
                                 function(attr) {
@@ -56,7 +74,7 @@ cleanRoster_Liberty <- function(roster,
     tidyr::separate(
       col = "Other",
       into = c("Year", "Hometown", "PriorSchool"),
-      sep = "[[:space:]]{2,}/[[:space:]]+"
+      sep = "[[:space:]]+/[[:space:]]+"
     ) %>%
     tidyr::separate(Hometown,
                     into = c("Hometown", "State"),
