@@ -20,17 +20,17 @@ fetchStats_Sidearm <- function(url){
   }
   
   battingSection <- page %>% 
-    rvest::html_node("section#individual-overall-batting,div#individual-batting")
+    rvest::html_element("section#individual-overall-batting,div#individual-batting")
   
   batting <- battingSection %>% 
-    rvest::html_node("table") %>% 
+    rvest::html_element("table") %>% 
     rvest::html_table()
   
   pitchingSection <- page %>% 
-    rvest::html_node("section#individual-overall-pitching,div#individual-pitching")
+    rvest::html_element("section#individual-overall-pitching,div#individual-pitching")
   
   pitching <- pitchingSection %>% 
-    rvest::html_node("table") %>% 
+    rvest::html_element("table") %>% 
     rvest::html_table()
   
   table <- list(batting = batting, pitching = pitching)
