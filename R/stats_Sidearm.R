@@ -12,7 +12,7 @@ getStats_Sidearm <- function(statsURL, ...){
 fetchStats_Sidearm <- function(url){
   page <- xml2::read_html(url)
   
-  if(is.na(rvest::html_node(page,"table"))) {
+  if(is.na(rvest::html_element(page,"table"))) {
     message("Loading Page Found, Starting Selenium")
     selStats <- fetch_SeleniumStats(url)
     
