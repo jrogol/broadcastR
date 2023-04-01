@@ -61,6 +61,8 @@ cleanStats_StatCrew <- function(tableList) {
 # cleanBatting_StatCrew ----
 
 cleanBatting_StatCrew <- function(table) {
+  
+  if(any(names(table) == "sb-att")){
   batting <- table %>% 
     tidyr::separate("sb-att",
                     into = c("sb","att"),
@@ -68,6 +70,7 @@ cleanBatting_StatCrew <- function(table) {
                     convert = T)
   
   # Caught stealing can be easily calculated:
+  }
   
   batting <- batting %>% 
     dplyr::mutate(cs = att-sb)
@@ -95,15 +98,21 @@ cleanBatting_StatCrew <- function(table) {
 cleanPitching_StatCrew <- function(table) {
   pitching <- dplyr::rename_all(table, toupper) %>% 
     dplyr::filter(!is.na(ERA),
-           !grepl("--|totals?|opponents?",PLAYER)) %>% 
+                  !grepl("--|totals?|opponents?",PLAYER)) %>% 
     tidyr::separate("W-L",
                     into = c("Win", "Loss"),
                     sep = "-") %>% 
-    tidyr::separate("APP-GS",
-                    into = c("G","GS"),
-                    sep = "-") %>% 
     # Take CG shutouts only, not combined ones.
-    dplyr::mutate(SHO = stringr::str_extract(SHO,"^\\d+")) %>% 
+    dplyr::mutate(SHO = stringr::str_extract(SHO,"^\\d+"))
+  
+  if(any(names(pitching) == "APP-GS")){
+    pitching <- tidyr::separate(pitching,
+                                "APP-GS",
+                                into = c("G","GS"),
+                                sep = "-")
+  }
+  
+  pitching <- pitching %>% 
     dplyr::select(PLAYER, base::intersect(pitchingStats,names(.))) %>%
     dplyr::rename_at(dplyr::vars(-PLAYER),~paste0(.,"_PitchingSeason"))
   
