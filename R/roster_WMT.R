@@ -44,7 +44,7 @@ cleanRoster_WMT <- function(roster_df) {
                                   Weight = "Wt.",
                                   Number = "No."))) %>%
     dplyr::mutate(
-      Position = stringr::str_extract(Position, "[A-z/123]+$"),
+      Position = cleanPosition(stringr::str_extract(Position, "[A-z/123]+$")),
       Height = stringr::str_replace(Height, "(\\d)-(\\d+)", "\\1'\\2\\\"")
     )
   
