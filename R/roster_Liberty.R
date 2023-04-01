@@ -58,8 +58,8 @@ fetchPlayer_Liberty <- function(l){
 
 cleanRoster_Liberty <- function(roster,
                                 attrs = list(Position1 = "^[^[:space:]]+",
-                                             ht = "\\d-\\d{1,2}",
-                                             wt = "\\d{3}",
+                                             Height = "\\d-\\d{1,2}",
+                                             Weight = "\\d{3}",
                                              bt = "[SRL] ?- ?[RL]")) {
   roster %>%
     dplyr::bind_cols(purrr::map(attrs,
