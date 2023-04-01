@@ -57,7 +57,7 @@ fetchPlayer_Liberty <- function(l){
 # Cleaning ----------------------------------------------------------------
 
 cleanRoster_Liberty <- function(roster,
-                                attrs = list(Position1 = "^[^[:space:]]+",
+                                attrs = list(Position = "^[^[:space:]]+",
                                              Height = "\\d-\\d{1,2}",
                                              Weight = "\\d{3}",
                                              bt = "[SRL] ?- ?[RL]")) {
