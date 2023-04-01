@@ -122,7 +122,7 @@ fetch_SeleniumStats <- function(url,
   table <- unlist(statsFrames,recursive = F)
   
   table <- purrr::map(table,function(t){
-    names(t)[names(t) %in%  c("","PLAYER")] <- "Player"
+    names(t)[names(t) == ""] <- "PLAYER"
     names(t)[names(t) %in% c("#","NUMBER")] <- "Number"
     names(t)[names(t) == "K"] <- "SO"
     return(t)

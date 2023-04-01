@@ -9,12 +9,12 @@ getStats_Sidearm <- function(statsURL, ...){
 }
 
 
-fetchStats_Sidearm <- function(url){
+fetchStats_Sidearm <- function(url,...){
   page <- xml2::read_html(url)
   
   if(is.na(rvest::html_element(page,"table"))) {
     message("Loading Page Found, Starting Selenium")
-    selStats <- fetch_SeleniumStats(url)
+    selStats <- fetch_SeleniumStats(url,...)
     
     return(selStats)
   }
@@ -53,7 +53,7 @@ cleanStats_Sidearm <- function(listTable){
 
 
 
-cleanPlayer_SidearmStats <- function(table, col = "Player") {
+cleanPlayer_SidearmStats <- function(table, col = "PLAYER") {
   table[[col]] <- stringr::str_trim(gsub("\\r\\n.*","",table[[col]]))
   
   table[[col]] <- sub("([\\w\\-' \\.]+), ([\\w\\-' ]+)", "\\2 \\1", table[[col]], perl = T)
