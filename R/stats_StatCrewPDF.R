@@ -25,7 +25,7 @@ fetchStatCrew_PDF <- function(pdfLink){
   
   
   # Which rows contain the totals?
-  totals <- grep("^totals\\s+",byLine,ignore.case = T)
+  totals <- grep("(^|\\s?)totals\\s+",byLine,ignore.case = T)
   
   
   batting <- byLine[(header[1]):(totals[1]-1)]
