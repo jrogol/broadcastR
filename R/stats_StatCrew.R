@@ -60,10 +60,10 @@ cleanStats_StatCrew <- function(tableList) {
 
 # cleanBatting_StatCrew ----
 
-cleanBatting_StatCrew <- function(table) {
+cleanBatting_StatCrew <- function(battingTbl) {
   
-  if(any(names(table) == "sb-att")){
-  batting <- table %>% 
+  if(any(names(battingTbl) == "sb-att")){
+    battingTbl <- battingTbl %>% 
     tidyr::separate("sb-att",
                     into = c("sb","att"),
                     sep = "-",
@@ -72,13 +72,14 @@ cleanBatting_StatCrew <- function(table) {
   # Caught stealing can be easily calculated:
   }
   
-  batting <- batting %>% 
-    dplyr::mutate(cs = att-sb)
-  
+  if(any(names(battingTbl) == "sb-att")){
+    battingTbl <- battingTbl %>% 
+      dplyr::mutate(cs = att-sb)
+  }
   
   # select the appropriate stats 
   
-  batting <- dplyr::rename_all(batting,toupper) %>% 
+  batting <- dplyr::rename_all(battingTbl,toupper) %>% 
     dplyr::select(PLAYER, base::intersect(battingStats,names(.))) #broadcastR:::battingStats
   
   # lastly, we'll need to filter out incomplete rows, the Total, and Opposition
@@ -101,9 +102,13 @@ cleanPitching_StatCrew <- function(table) {
                   !grepl("--|totals?|opponents?",PLAYER)) %>% 
     tidyr::separate("W-L",
                     into = c("Win", "Loss"),
-                    sep = "-") %>% 
+                    sep = "-")
+  
+  if(any(names(pitching) == "SHO")){
     # Take CG shutouts only, not combined ones.
-    dplyr::mutate(SHO = stringr::str_extract(SHO,"^\\d+"))
+    pitching <- dplyr::mutate(pitching,
+                              SHO = stringr::str_extract(SHO,"^\\d+"))
+  }
   
   if(any(names(pitching) == "APP-GS")){
     pitching <- tidyr::separate(pitching,
