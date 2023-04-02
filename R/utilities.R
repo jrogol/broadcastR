@@ -47,6 +47,8 @@ fetchStatSource <- function(statURL){
     "statcrew"
   } else if (grepl("cumestats\\.aspx|/sports/.+/(cume)?stats/?",statURL)) {
     "sidearm"
+  } else if(grepl("\\.pdf$",statURL)){
+    "pdf"
   } else {
     "d1"
   }

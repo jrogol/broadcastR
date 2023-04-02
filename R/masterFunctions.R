@@ -112,6 +112,7 @@ getStats <- function(team, statURL, roster_df, col.names = format ,...) {
   stats <- switch(source,
          sidearm = getStats_Sidearm(statURL,...),
          statcrew = getStats_StatCrew(statURL),
+         pdf = getStats_PDF(statURL),
          d1 = getStats_D1(statURL, roster_df))
   
   return(stats)
