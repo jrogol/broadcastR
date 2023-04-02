@@ -1,4 +1,4 @@
-getStats_PDF <- function(statsURL,player_df){
+getStats_PDF <- function(statsURL,player_df,...){
   data <- fetchStatCrew_PDF(statsURL, ...)
   
   clean <- cleanStats_StatCrew(data)
