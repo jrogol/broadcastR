@@ -39,9 +39,9 @@ cleanStats_StatCrew <- function(tableList) {
   
   ## Add in name formatting - need conditionals!
   
-  if(sum(grepl("([A-Z -']+), ([[:alpha:]\\. '-]+)",tableList$batting$Player)) > 0){
+  if(sum(grepl("([cA-Z -']+), ([[:alpha:]\\. '-]+)",tableList$batting$Player)) > 0){
         tableList <- purrr::map(tableList,
-          ~dplyr::mutate(.,Player = gsub("([A-Z -']+), ([[:alpha:]\\. '-]+)","\\2 \\1",Player))
+          ~dplyr::mutate(.,Player = gsub("([cA-Z -']+), ([[:alpha:]\\. '-]+)","\\2 \\1",Player))
             )
   }
   tableList <- purrr::map(tableList, 
