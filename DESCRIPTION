@@ -27,7 +27,8 @@ Imports:
     googlesheets4,
     binman,
     wdman,
-    RSelenium
+    RSelenium,
+    fuzzyjoin
 Suggests: 
     spelling
 Language: en-US

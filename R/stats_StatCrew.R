@@ -141,8 +141,16 @@ joinStatCrew <- function(player_df,tableList) {
     dplyr::rename(FirstName = First,
                   LastName = Last) %>% 
     dplyr::arrange(Number) %>%
-    dplyr::left_join(tableList$batting, by  = c("Name" = "PLAYER")) %>% 
-    dplyr::left_join(tableList$pitching, by = c("Name" = "PLAYER")) %>% 
+    fuzzyjoin::stringdist_left_join(tableList$batting,
+                                    by = c("Name" = "PLAYER"),
+                                    max_dist = 5,
+                                    method = "lcs",
+                                    ignore_case = T) %>% 
+    fuzzyjoin::stringdist_left_join(tableList$pitching,
+                                    by = c("Name" = "PLAYER"),
+                                    max_dist = 5,
+                                    method = "lcs",
+                                    ignore_case = T) %>% 
     dplyr::arrange(as.numeric(Number))
   
   return(output)
