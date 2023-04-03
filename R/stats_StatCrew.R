@@ -129,7 +129,8 @@ cleanPitching_StatCrew <- function(table) {
 
 
 
-joinStatCrew <- function(player_df,tableList) {
+joinStatCrew <- function(player_df,tableList,
+                         joinTerm = c("Name" = "PLAYER")) {
   
   tableList <- purrr::map(tableList,
                           ~dplyr::mutate(.,PLAYER = tolower(PLAYER)))
@@ -137,20 +138,33 @@ joinStatCrew <- function(player_df,tableList) {
   
   player_df$Name <- tolower(player_df$Name)
   
-  output <- dplyr::rename_all(player_df,stringr::str_to_title) %>% 
+  player_df <- dplyr::rename_all(player_df,stringr::str_to_title) %>% 
     dplyr::rename(FirstName = First,
-                  LastName = Last) %>% 
-    dplyr::arrange(Number) %>%
-    fuzzyjoin::stringdist_left_join(tableList$batting,
+                  LastName = Last)
+  
+  if(length(setdiff(player_df$Name, unique(tableList$batting$PLAYER,
+                                 tableList$pitching$PLAYER))) > 0){
+    output <- player_df %>% 
+      fuzzyjoin::stringdist_left_join(tableList$batting,
                                     by = c("Name" = "PLAYER"),
                                     max_dist = 5,
                                     method = "lcs",
                                     ignore_case = T) %>% 
-    fuzzyjoin::stringdist_left_join(tableList$pitching,
-                                    by = c("Name" = "PLAYER"),
-                                    max_dist = 5,
-                                    method = "lcs",
-                                    ignore_case = T) %>% 
+      fuzzyjoin::stringdist_left_join(tableList$pitching,
+                                      by = c("Name" = "PLAYER"),
+                                      max_dist = 5,
+                                      method = "lcs",
+                                      ignore_case = T) %>% 
+      dplyr::arrange(as.numeric(Number))
+    
+    return(output)
+  }
+  
+  output <- player_df %>% 
+    left_join(tableList$batting,
+              by = c("Name" = "PLAYER")) %>% 
+    left_join(tableList$pitching,
+              by = c("Name" = "PLAYER")) %>% 
     dplyr::arrange(as.numeric(Number))
   
   return(output)
