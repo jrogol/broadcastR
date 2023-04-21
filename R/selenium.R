@@ -81,16 +81,18 @@ fetch_SeleniumStats <- function(url,
   
   browser$navigate(url)
   
-  Sys.sleep(2)
+  Sys.sleep(5)
   
   # Find the stats iframe
-  statsFrame <- browser$findElement("css","wmt-stats-iframe")
+  statsFrame <- try(browser$findElement("css","wmt-stats-iframe"),
+                    silent = T)
   
-  # Locate the iframe wit hthe actual data
-  iFrame <- statsFrame$findChildElement("css","iframe")
-  
-  # swtich to the Iframe
-  browser$switchToFrame(iFrame)
+  if(!any(attributes(statsFrame) == "try-error")) {
+    # Locate the iframe wit hthe actual data
+    iFrame <- statsFrame$findChildElement("css","iframe")
+    # swtich to the Iframe
+    browser$switchToFrame(iFrame) 
+  }
   
   buttons <- browser$findElements("xpath","//button[normalize-space()='Batting' or normalize-space()='Pitching']")
   
@@ -101,6 +103,7 @@ fetch_SeleniumStats <- function(url,
                               
                               # Click The Button
                               b$clickElement()
+                              Sys.sleep(2)
                               
                               # Get the Source of the new page
                               page <- b$getPageSource()[[1]]
@@ -109,6 +112,13 @@ fetch_SeleniumStats <- function(url,
                               
                               parsed <- rvest::read_html(page)
                               tab <- rvest::html_table(parsed)
+                              
+                              
+                              if(inherits(tab, 'list') & length(tab) == 2){
+                                names(tab) <- c("Batting","Pitching")
+                                return(tab)
+                              }
+                              
                               # return the table as a names list.
                               names(tab) <- tabType
                               
@@ -119,7 +129,7 @@ fetch_SeleniumStats <- function(url,
   
   serv$stop()
   
-  table <- unlist(statsFrames,recursive = F)
+  table <- unlist(unique(statsFrames),recursive = F)
   
   table <- purrr::map(table,function(t){
     names(t)[names(t) == ""] <- "PLAYER"
