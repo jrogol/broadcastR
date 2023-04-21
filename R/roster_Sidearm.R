@@ -82,7 +82,54 @@ fetchPlayer_Sidearm <- function(node) {
 fetchRoster_Sidearm <- function(teamName, url, sport){
   players <- fetchPlayerNodes_Sidearm(url)
   
-  roster <- purrr::map_df(players, fetchPlayer_Sidearm)
+  if(length(players) > 0){
+    roster <- purrr::map_df(players, fetchPlayer_Sidearm)
+    return(roster)
+  }
+  
+  message("Loading Page Found, Starting Selenium")
+  
+  serv <- startChromeServer()
+  
+  browser <- startSelenium(serv,headless = T)
+  
+  browser$open(silent = T)
+  
+  browser$navigate(url)
+  
+  Sys.sleep(2)
+  
+  # Note: this is the same logic used in fetch_SeleniumStats()
+  page <- browser$getPageSource()[[1]]
+  
+  parsed <- rvest::read_html(page)
+  tab <- rvest::html_table(parsed)[[1]]
+  
+  browser$close()
+  
+  serv$stop()
+  
+  names(tab)[grepl("^(No\\.)",names(tab))] <- "Number"
+  names(tab)[grepl("^Pos",names(tab))] <- "Position"
+  names(tab)[grepl("B/T",names(tab))] <- "bats"
+  names(tab)[grepl("^H(eigh)?t",names(tab))] <- "Height"
+  names(tab)[grepl("^W(eigh)?t",names(tab))] <- "Weight"
+  names(tab)[grepl("^(Cl(ass)?|Y(ea)?r)",names(tab))] <- "Year"
+  names(tab)[grepl("Hometown",names(tab))] <- "hometown"
+  
+  if(!any(names(tab) == "Weight")) tab$Weight <- NA_character_
+  
+  roster <-dplyr::mutate(tab,
+                          dplyr::across(hometown,
+                                        ~stringr::str_extract(.,"^.+(?=\\s+/)"))) %>% 
+    dplyr::select(dplyr::any_of(c("Number","Name",
+                                  "Position",
+                                  "bats",
+                                  "hometown",
+                                  "Height",
+                                  "Weight",
+                                  "Year")))
+  
   
   return(roster)
 }
@@ -103,7 +150,7 @@ cleanRoster_Sidearm <- function(rosterTable){
                     into = c("Hometown","State"),
                     sep = ", +",
                     extra = "merge") %>% 
-    dplyr::mutate(dplyr::across(where(is.character) & "Weight",
+    dplyr::mutate(dplyr::across(where(is.character) & dplyr::contains("Weight"),
                                 readr::parse_number),
                   Position = stringr::str_extract(Position,"[A-Z123/]+$"))
   
