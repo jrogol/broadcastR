@@ -135,6 +135,11 @@ fetch_SeleniumStats <- function(url,
     names(t)[names(t) == ""] <- "PLAYER"
     names(t)[names(t) %in% c("#","NUMBER")] <- "Number"
     names(t)[names(t) == "K"] <- "SO"
+    
+    if(any(grepl("\\n",t$PLAYER))){
+      t$PLAYER <- stringr::str_extract(t$PLAYER,".+(?=\\n)")
+    }
+    
     return(t)
   })
   
