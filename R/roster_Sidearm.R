@@ -109,13 +109,13 @@ fetchRoster_Sidearm <- function(teamName, url, sport){
   
   serv$stop()
   
-  names(tab)[grepl("^(No\\.)",names(tab))] <- "Number"
-  names(tab)[grepl("^Pos",names(tab))] <- "Position"
-  names(tab)[grepl("B/T",names(tab))] <- "bats"
-  names(tab)[grepl("^H(eigh)?t",names(tab))] <- "Height"
-  names(tab)[grepl("^W(eigh)?t",names(tab))] <- "Weight"
-  names(tab)[grepl("^(Cl(ass)?|Y(ea)?r)",names(tab))] <- "Year"
-  names(tab)[grepl("Hometown",names(tab))] <- "hometown"
+  names(tab)[grepl("^(No\\.?)",names(tab),ignore.case = T)] <- "Number"
+  names(tab)[grepl("^Pos",names(tab),ignore.case = T)] <- "Position"
+  names(tab)[grepl("B/T",names(tab),ignore.case = T)] <- "bats"
+  names(tab)[grepl("^H(eigh)?t",names(tab),ignore.case = T)] <- "Height"
+  names(tab)[grepl("^W(eigh)?t",names(tab),ignore.case = T)] <- "Weight"
+  names(tab)[grepl("^(Cl(ass)?|Y(ea)?r)",names(tab),ignore.case = T)] <- "Year"
+  names(tab)[grepl("Hometown",names(tab),ignore.case = T)] <- "hometown"
   
   if(!any(names(tab) == "Weight")) tab$Weight <- NA_character_
   
