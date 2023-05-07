@@ -116,6 +116,7 @@ fetchRoster_Sidearm <- function(teamName, url, sport){
   names(tab)[grepl("^W(eigh)?t",names(tab),ignore.case = T)] <- "Weight"
   names(tab)[grepl("^(Cl(ass)?|Y(ea)?r)",names(tab),ignore.case = T)] <- "Year"
   names(tab)[grepl("Hometown",names(tab),ignore.case = T)] <- "hometown"
+  names(tab)[grepl("Name",names(tab),ignore.case = T)] <- "Name"
   
   if(!any(names(tab) == "Weight")) tab$Weight <- NA_character_
   

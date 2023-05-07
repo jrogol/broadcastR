@@ -84,10 +84,12 @@ fetch_SeleniumStats <- function(url,
   Sys.sleep(5)
   
   # Find the stats iframe
-  statsFrame <- try(browser$findElement("css","wmt-stats-iframe"),
-                    silent = T)
+  statsFrame <- tryCatch(browser$findElement("css","wmt-stats-iframe"),
+                         error= function(e) {
+                           attr(e,"try-error") <- e
+                           return(e)})
   
-  if(!any(attributes(statsFrame) == "try-error")) {
+  if(!inherits(statsFrame,"error")) {
     # Locate the iframe wit hthe actual data
     iFrame <- statsFrame$findChildElement("css","iframe")
     # swtich to the Iframe

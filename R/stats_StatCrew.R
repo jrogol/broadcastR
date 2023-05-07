@@ -133,7 +133,8 @@ joinStatCrew <- function(player_df,tableList,
                          joinTerm = c("Name" = "PLAYER")) {
   
   tableList <- purrr::map(tableList,
-                          ~dplyr::mutate(.,PLAYER = tolower(PLAYER)))
+                          ~dplyr::mutate(.,PLAYER = tolower(PLAYER)%>% 
+                                           stringr::str_remove_all("\\n.+")))
 
   
   player_df$Name <- tolower(player_df$Name)
