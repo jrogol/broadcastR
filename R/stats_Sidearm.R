@@ -29,6 +29,35 @@ fetchStats_Sidearm <- function(url,...){
   pitchingSection <- page %>% 
     rvest::html_element("section#individual-overall-pitching,div#individual-pitching")
   
+  ######
+  if(is.na(pitchingSection)){
+    serv <- startChromeServer()
+    
+    browser <- startSelenium(serv,headless = T)
+    
+    browser$open(silent = T)
+    
+    browser$navigate(url)
+    
+    Sys.sleep(2)
+    
+    b <- browser$findElement("xpath","//button[normalize-space()='Pitching']")
+    
+    b$clickElement()
+    
+    Sys.sleep(2)
+    
+    page <- b$getPageSource()[[1]]
+    
+    browser$close()
+    serv$stop()
+    
+    pitchingSection <- rvest::read_html(page) %>% 
+      rvest::html_element("section#individual-overall-pitching,div#individual-pitching")
+  }
+  #####
+  
+  
   pitching <- pitchingSection %>% 
     rvest::html_element("table") %>% 
     rvest::html_table()
