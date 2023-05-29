@@ -103,7 +103,31 @@ fetchRoster_Sidearm <- function(teamName, url, sport){
   page <- browser$getPageSource()[[1]]
   
   parsed <- rvest::read_html(page)
-  tab <- rvest::html_table(parsed)[[1]]
+  tab <- rvest::html_table(parsed)
+  
+  if (length(tab) > 0) {
+    tab <- tab[[1]]
+  } else {
+    tab  <- parsed %>%
+      rvest::html_elements("div.s-person-card") %>%
+      purrr::map_df(\(n) {
+        spans <- n %>%
+          rvest::html_elements("span") %>%
+          rvest::html_text(trim = T)
+        
+        names(spans) <- c("Number",
+                          "Name",
+                          "Position",
+                          "Year",
+                          "Height",
+                          "Weight",
+                          "HS",
+                          "hometown",
+                          "bio")
+        return(spans)
+        
+      })
+  }
   
   browser$close()
   
@@ -122,7 +146,9 @@ fetchRoster_Sidearm <- function(teamName, url, sport){
   
   roster <-dplyr::mutate(tab,
                           dplyr::across(hometown,
-                                        ~stringr::str_extract(.,"^.+(?=\\s+/)"))) %>% 
+                                        ~dplyr::if_else(grepl("/",.),
+                                                        stringr::str_extract(.,"^.+(?=\\s+/)"),
+                                                        .))) %>% 
     dplyr::select(dplyr::any_of(c("Number","Name",
                                   "Position",
                                   "bats",
@@ -144,9 +170,14 @@ cleanRoster_Sidearm <- function(rosterTable){
   # Split bats into bats/throws, hometown into hometown/state, remove lbs from weight.
   
   player_df <- rosterTable %>% 
-    tidyr::separate(bats,
-                    into = c("Bats","Throws"),
-                    sep = "/") %>% 
+    (\(tab){
+      if("bats" %in% names(tab)){
+        tab <- tidyr::separate(tab,bats,
+                               into = c("Bats","Throws"),
+                               sep = "/")
+      }
+      return(tab)
+    }) %>% 
     tidyr::separate(hometown,
                     into = c("Hometown","State"),
                     sep = ", +",
