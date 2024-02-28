@@ -23,6 +23,88 @@ getChromeVersion <- function(){
   return(chromeVer)
 }
 
+fetchDriver <- function(chromeVer = NULL){
+  # List of Chrome for Testing Assets
+  knownDL <- "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json"
+  
+  rsp <- jsonlite::fromJSON(knownDL)
+  
+  ver <- rsp$version
+  
+  # Find latest release for the milestone (first digits, or item of the hidden list)
+  latest <- ver[max(grep(paste0("^",unlist(chromeVer)[[1]],"\\b"),
+                         ver$version)),]
+  
+  # Chrome drivers for the latest release
+  drivers <- latest$downloads$chromedriver[[1]]
+  
+  # determine platform & architecture
+  # "linux64"   "mac-arm64" "mac-x64"   "win32"     "win64"
+  if(xfun::is_macos()){
+    platform <- ifelse(xfun::is_arm64(),"mac-arm64","mac-x64")
+    
+    arch <- "mac64"
+  }
+  
+  if(xfun::is_windows()){
+    platform <- "win32"
+    
+    arch <- platform
+  }
+  
+  ix <- which(grepl(platform,drivers$platform))
+  
+  url <- drivers$url[ix]
+  
+  
+  
+  # Where is the driver located?
+  driverDir <- binman::app_dir("chromedriver",check = T)
+  
+  
+  # Make a new subdir for the version, and unzip there!
+  subdir <- file.path(driverDir,arch,chromeVer)
+  
+  if(!dir.exists(subdir)){
+    dir.create(subdir,recursive = T)
+  }
+  
+  zipName <- tail(unlist(strsplit(url,"/")),1)
+  
+  zipPath <- file.path(subdir,zipName)
+  
+  download.file(url,
+                destfile = zipPath)
+  
+  files <- unzip(zipPath,list = T)
+  
+  # Get the name of the file that's NOT the license.
+  drvName <- grep("LICENSE.chromedriver",
+                  files$Name,
+                  ignore.case = T,
+                  invert = T,
+                  value = T)
+  
+  #unzips to working directory by default
+  unzip(zipPath,
+        files = NULL,
+        exdir = subdir
+  )
+  # Need to make the file executable!
+  fs::file_chmod(file.path(subdir,drvName),
+                 "755")
+  
+  # Move contents of folder
+  zipFolder <- list.dirs(subdir,recursive = F)
+  
+  for (f in list.files(zipFolder)){
+    fs::file_move(file.path(zipFolder,f),
+                  subdir)
+  }
+  
+  fs::dir_delete(zipFolder)
+  
+}
 
 getDriverVersion <- function(){
   cdVer <- binman::list_versions("chromedriver")
