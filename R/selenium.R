@@ -7,9 +7,18 @@ getChromeVersion <- function(){
     
     chromeVer <- na.omit(stringr::str_extract(regVersion,"(\\d+\\.?){4}"))
     
-    chromeVer <- as.numeric_version(chromeVer)
     
   }
+  
+  if(xfun::is_macos()) {
+    chromeVer <- system2("defaults",
+                         c("read",
+                           "/Applications/Google\\ Chrome.app/Contents/Info.plist",
+                           "CFBundleShortVersionString"),
+                         stdout =T)
+  }
+  
+  chromeVer <- as.numeric_version(chromeVer)
   
   return(chromeVer)
 }
