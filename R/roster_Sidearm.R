@@ -102,36 +102,30 @@ fetchRoster_Sidearm <- function(teamName, url, sport){
   # Note: this is the same logic used in fetch_SeleniumStats()
   page <- browser$getPageSource()[[1]]
   
+  browser$close()
+  
+  serv$stop()
+  
   parsed <- rvest::read_html(page)
   tab <- rvest::html_table(parsed)
   
   if (length(tab) > 0) {
     tab <- tab[[1]]
+  } else if (
+    inherits(rvest::html_element(parsed,
+                                 ".sidearm-roster-list-item"),
+             "xml_node")
+  ){
+    players <- rvest::html_elements(parsed,
+                                    ".sidearm-roster-list-item")
+    # This is the same logic as the header.
+    roster <- purrr::map_df(players, broadcastR:::fetchPlayer_Sidearm)
+    return(roster)
   } else {
-    tab  <- parsed %>%
-      rvest::html_elements("div.s-person-card") %>%
-      purrr::map_df(\(n) {
-        spans <- n %>%
-          rvest::html_elements("span") %>%
-          rvest::html_text(trim = T)
-        
-        names(spans) <- c("Number",
-                          "Name",
-                          "Position",
-                          "Year",
-                          "Height",
-                          "Weight",
-                          "HS",
-                          "hometown",
-                          "bio")
-        return(spans)
-        
-      })
+    tab  <- fetch_sidearm_24_roster(parsed)
   }
   
-  browser$close()
-  
-  serv$stop()
+  names(tab) <- stringr::str_to_title(names(tab))
   
   names(tab)[grepl("^(No\\.?)",names(tab),ignore.case = T)] <- "Number"
   names(tab)[grepl("^Pos",names(tab),ignore.case = T)] <- "Position"
@@ -144,7 +138,7 @@ fetchRoster_Sidearm <- function(teamName, url, sport){
   
   if(!any(names(tab) == "Weight")) tab$Weight <- NA_character_
   
-  roster <-dplyr::mutate(tab,
+  roster <- dplyr::mutate(tab,
                           dplyr::across(hometown,
                                         ~dplyr::if_else(grepl("/",.),
                                                         stringr::str_extract(.,"^.+(?=\\s+/)"),
