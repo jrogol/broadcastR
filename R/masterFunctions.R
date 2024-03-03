@@ -51,12 +51,12 @@ getData <- function(teamName,
 #' @param url
 #' @param source
 #' @param sport
+#' @param ... Additional Arguments passed to Sidearm Roster Functions
 #'
 #' @return
 #' @export
 #'
-#' @examples
-getRoster <- function(teamName, url, source, sport) {
+getRoster <- function(teamName, url, source, sport, ...) {
 
   source <- match.arg(source,
                       c("sidearm","wmt","liberty"))
@@ -65,7 +65,7 @@ getRoster <- function(teamName, url, source, sport) {
   # Error Handling for url
 
   roster <- switch(source,
-    sidearm = getRoster_Sidearm(teamName,url,sport),
+    sidearm = getRoster_Sidearm(teamName,url,sport,...),
     wmt = getRoster_WMT(teamName,url,sport),
     liberty = getRoster_Liberty(teamName,url,sport)
   )

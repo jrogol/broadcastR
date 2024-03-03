@@ -1,5 +1,5 @@
-getRoster_Sidearm <- function(teamName, url, sport) {
-  roster <- fetchRoster_Sidearm(teamName, url, sport)
+getRoster_Sidearm <- function(teamName, url, sport,...) {
+  roster <- fetchRoster_Sidearm(teamName, url, sport,...)
   
   rosterClean <- cleanRoster_Sidearm(roster)
   
@@ -79,7 +79,7 @@ fetchPlayer_Sidearm <- function(node) {
 
 
 
-fetchRoster_Sidearm <- function(teamName, url, sport){
+fetchRoster_Sidearm <- function(teamName, url, sport, headless = T){
   players <- fetchPlayerNodes_Sidearm(url)
   
   if(length(players) > 0){
@@ -91,7 +91,7 @@ fetchRoster_Sidearm <- function(teamName, url, sport){
   
   serv <- startChromeServer()
   
-  browser <- startSelenium(serv,headless = T)
+  browser <- startSelenium(serv,headless = headless)
   
   browser$open(silent = T)
   
