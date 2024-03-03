@@ -48,8 +48,8 @@ write_TeamSheet <-
     ss <- switch(flag,
                  baseballRoster = "1CtmfBGAMPSeoSxImSJinBB3-8sXFj4B1nAZzPOW_VJY",
                  softballRoster = "1z1OcoShl16npgMti_eY35GgLz17py5JhjMW0RBUR3J4",
-                 baseballStats = "1TkiDPhCRmLjGcTSf9rVwtobSlnAxiStEmCphx_X3Xnc",
-                 softballStats = "1yX1Z029EXMt3bc6JG5aJVt7p8ARl7DWHk3vAFJg3bBE")
+                 baseballStats = "1BxpXlNZGr0tfEDxy9RRG70nkjeEpazDdD5hkVSYMlUQ",
+                 softballStats = "1djf6tBRGEuhwSfqhO8TQKRt0q094u-V2ykJFhAT_DV4")
     
     stopifnot(
       # "Invalid Sport" = !is.null(ss),
