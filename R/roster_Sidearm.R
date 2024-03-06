@@ -182,3 +182,54 @@ cleanRoster_Sidearm <- function(rosterTable){
   
   return(player_df)
 }
+
+sidearm_details <- function(nodes,
+                            names.css = "span.sr-only",
+                            details.xpath){
+  nms <- rvest::html_elements(nodes,names.css) %>%
+    rvest::html_text(trim = T)
+
+  deets <- rvest::html_elements(nodes,
+                                xpath = details.xpath) %>%
+    rvest::html_text(trim = T)
+
+  length(deets) <- max(length(nms),length(deets))
+
+  deets <- purrr::set_names(deets,nms)
+
+  return(deets)
+}
+
+fetch_sidearm_24_roster <- function(html){
+  players <- rvest::html_elements(html,
+                                  "div.s-person-card__content")
+
+  # Iterate over Players
+
+  player_df <- purrr::map_df(players,\(player) {
+
+    det <- list()
+
+    det[["number"]] <- player %>%
+      rvest::html_elements(" div.s-person-details div.s-person-details__thumbnail span") %>%
+      rvest::html_text(trim = T)
+
+    det[["name"]] <- player %>%
+      rvest::html_elements("div.s-person-details div[class*='personal'] span") %>%
+      rvest::html_text()
+
+    bio <- player %>%
+      rvest::html_elements("div.s-person-details div[class*='bio-stats']") %>%
+      sidearm_details(details.xpath = ".//span[contains(@class,'item')]/text()")
+
+    loc <- player %>%
+      rvest::html_elements(xpath = ".//div[contains(@class,'location')]") %>%
+      sidearm_details(details.xpath = "./span[not(@class = 'sr-only')]/text()")
+
+    out <- c(det,bio,loc)
+
+    return(out)
+  })
+
+  return(player_df)
+}

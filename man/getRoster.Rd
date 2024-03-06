@@ -4,10 +4,10 @@
 \alias{getRoster}
 \title{Title}
 \usage{
-getRoster(teamName, url, source, sport)
+getRoster(teamName, url, source, sport, ...)
 }
 \arguments{
-\item{sport}{}
+\item{...}{Additional Arguments passed to Sidearm Roster Functions}
 }
 \description{
 Title
