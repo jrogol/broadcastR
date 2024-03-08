@@ -90,6 +90,8 @@ cleanPlayer_SidearmStats <- function(table, col = "PLAYER") {
   
   table[[col]] <- sub("([\\w\\-' \\.]+), ([\\w\\-' ]+)", "\\2 \\1", table[[col]], perl = T)
   
+  table[["Number"]] <- stringr::str_extract(table[["Number"]],"^\\d{1,2}")
+  
   table <- dplyr::rename_all(table,toupper)
   
   return(table)
@@ -115,6 +117,8 @@ cleanBatting_Sidearm <- function(listTable,...){
 }
 
 cleanPitching_Sidearm <- function(listTable,...) {
+  names(listTable$pitching)[grepl("^SHO?$",names(listTable$pitching))] <- "SHO"
+  
   pitching <- listTable$pitching %>% 
     dplyr::mutate(SHO = stringr::str_remove(SHO,"-.*"))
   
