@@ -90,7 +90,9 @@ cleanPlayer_SidearmStats <- function(table, col = "PLAYER") {
   
   table[[col]] <- sub("([\\w\\-' \\.]+), ([\\w\\-' ]+)", "\\2 \\1", table[[col]], perl = T)
   
-  table[["Number"]] <- stringr::str_extract(table[["Number"]],"^\\d{1,2}")
+  num.col <- which(names(table) %in% c("#","Number"))
+  
+  table[[num.col]] <- stringr::str_extract(table[[num.col]],"^\\d{1,2}")
   
   table <- dplyr::rename_all(table,toupper)
   
