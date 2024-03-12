@@ -56,7 +56,7 @@ write_TeamSheet <-
       "Invalid Data" = !is.data.frame(data[[1]])
     )
     
-    insert_TeamSheet(ss, team)
+    # insert_TeamSheet(ss, team)
     
     # if (team sheet exists and 
     
