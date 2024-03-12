@@ -22,7 +22,7 @@ output_rosterVariables <- function(df){
 insert_TeamSheet <- function(ss,team) {
   n <- sheet_names(ss)
   # Sheet1 should be removed in favour of virginia.
-  if (length(n) == 1 & n == "Sheet1") {
+  if (length(n) == 1 & all(n == "Sheet1")) {
     sheet_rename(ss, n, "Virginia")
     n <- c(n,"Virginia")
   }
