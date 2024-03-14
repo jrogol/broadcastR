@@ -33,7 +33,7 @@ fetchStats_Sidearm <- function(url,...){
   if(is.na(pitchingSection)){
     serv <- startChromeServer()
     
-    browser <- startSelenium(serv,headless = T)
+    browser <- startSelenium(serv,...)
     
     browser$open(silent = T)
     
