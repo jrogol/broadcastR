@@ -15,15 +15,15 @@ getData <- function(teamName,rosterURL,statURL, source, sport,
                     output.dir = NULL,
                     exportRoster = F, ...) {
   source <- match.arg(source,
-                      c("sidearm","wmt","neulion","presto","liberty"))
+                      c("sidearm","wmt","presto","liberty"))
   sport <- match.arg(sport,
-                     c("baseball"))
-  
+                     c("baseball","softball"))
+
   roster_df <- getRoster(teamName, rosterURL,source, sport)
-  
+
   stats_df <- getStats(teamName,statURL,roster_df,source = source)
-  
-  if(export){
+
+  if(exportRoster){
     exportRoster(teamName, roster_df, output.dir = output.dir)
   }
   
@@ -45,15 +45,14 @@ getData <- function(teamName,rosterURL,statURL, source, sport,
 getRoster <- function(teamName, url, source, sport) {
 
   source <- match.arg(source,
-                      c("sidearm","wmt","neulion","presto","liberty"))
+                      c("sidearm","wmt","presto","liberty"))
   sport <- match.arg(sport,
-                     c("baseball"))
+                     c("baseball","softball"))
   # Error Handling for url
 
   roster <- switch(source,
     sidearm = getRoster_Sidearm(teamName,url,sport),
     wmt = getRoster_WMT(teamName,url,sport),
-    neulion = getRoster_NL(teamName,url,sport),
     presto = getRoster_Presto(teamName,url,sport),
     liberty = getRoster_Liberty(teamName,url,sport)
   )
@@ -89,7 +88,7 @@ getStats <- function(team, statURL, roster_df, col.names = format ,...) {
   stats <- switch(source,
          sidearm = getStats_Sidearm(statURL, roster_df),
          statcrew = getStats_StatCrew(statURL, roster_df),
-         d1 = getStats_D1(statURL, roster_df))
+         stop(sprintf("Unrecognized stats source for URL: %s", statURL)))
   
   return(formatStats(stats, col.names))
 }

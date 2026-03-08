@@ -45,7 +45,7 @@ fetchStatSource <- function(statURL){
   } else if (grepl("teamcume|teamstat", statURL)) {
     "statcrew"
   } else {
-    "d1"
+    "unknown"
   }
 }
 
