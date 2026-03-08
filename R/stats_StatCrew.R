@@ -14,7 +14,7 @@ fetchStatCrew <- function(url, header = T, fill = T) {
   
   page <- xml2::read_html(url)
   
-  tables <- rvest::html_nodes(page,"table[cellpadding]")
+  tables <- rvest::html_elements(page, "table[cellpadding]")
   
   tables <- rvest::html_table(tables, header = header, fill = fill)
   

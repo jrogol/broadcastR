@@ -11,7 +11,7 @@ getRoster_Liberty <- function(teamName, url, sport){
 fetchRoster_Liberty <- function(teamName, url, sport){
   page <- xml2::read_html(url)
   
-  players <- rvest::html_node(page, "#roster") %>%
+  players <- rvest::html_element(page, "#roster") %>%
     rvest::html_children()
   
   roster <- purrr::map_df(players, broadcastR:::fetchPlayer_Liberty)
@@ -23,14 +23,14 @@ fetchRoster_Liberty <- function(teamName, url, sport){
 
 fetchPlayer_Liberty <- function(node){
   name <- node %>%
-    rvest::html_node("h3") %>%
+    rvest::html_element("h3") %>%
     rvest::html_text()
   number <- node %>%
-    rvest::html_node("span.jersey") %>%
+    rvest::html_element("span.jersey") %>%
     rvest::html_text()
   details <- node %>%
-    rvest::html_nodes("span:not(span.jersey)") %>%
-    rvest::html_text() %>% 
+    rvest::html_elements("span:not(span.jersey)") %>%
+    rvest::html_text() %>%
     purrr::reduce(paste, sep = " / ")
   
   player <- dplyr::bind_cols(Number = number,

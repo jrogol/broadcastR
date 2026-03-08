@@ -10,12 +10,12 @@ getStats_D1 <- function(statsURL, player_df, ...){
 fetchD1_Stats <- function(url) {
   page <- xml2::read_html(url)
   
-  batting <- page %>% 
-    rvest::html_node("table#batting-stats") %>% 
+  batting <- page %>%
+    rvest::html_element("table#batting-stats") %>%
     rvest::html_table()
   
-  pitching <- page %>% 
-    rvest::html_node("table#pitching-stats") %>% 
+  pitching <- page %>%
+    rvest::html_element("table#pitching-stats") %>%
     rvest::html_table()
   
   tables_out <- list(batting = batting, pitching = pitching)

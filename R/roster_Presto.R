@@ -10,9 +10,9 @@ getRoster_Presto <- function(teamName, url, sport) {
 fetchRoster_Presto <- function(teamName, url, sport){
   page <- xml2::read_html(url)
   
-  players <- page %>% 
-    rvest::html_node("div.roster") %>% 
-    rvest::html_node("table") %>% 
+  players <- page %>%
+    rvest::html_element("div.roster") %>%
+    rvest::html_element("table") %>%
     rvest::html_table()
   
   return(players)
