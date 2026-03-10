@@ -18,15 +18,20 @@ joinStates <- function(roster_df, from = "state", to = "USPS"){
 
 # The regEx looks for a space, followed by a (possibly) hypenated
 # word and an end line, e.g. the last word.
-separateName <- function(roster_df,
-                         sep = "([[:alnum:]-' \\.]+[^ ]) +([[:alnum:]-']+(?:,? [JSr\\.I]+)?)$",
-                         ...){
-  roster <- tidyr::extract(roster_df,Name,
-                           into= c("First","Last"),
-                           regex = sep,
-                           remove = FALSE,
-                           ...)
-  
+separateName <- function(
+  roster_df,
+  sep = "([[:alnum:]\\-' \\.]+[^ ]) +([[:alnum:]\\-']+(?:,? [JSr\\.I]+)?)$",
+  ...
+) {
+  roster <- tidyr::extract(
+    roster_df,
+    Name,
+    into = c("First", "Last"),
+    regex = sep,
+    remove = FALSE,
+    ...
+  )
+
   return(roster)
 }
 
@@ -40,10 +45,17 @@ write_roster <- function(df,team,sport, ...){
 
 
 fetchStatSource <- function(statURL){
-  if (grepl("stats/season|cumestats(\\.aspx|/season)?|/sports/.+/stats(/\\d{0,4})?$",statURL)) {
+  if (
+    grepl(
+      "stats/season|cumestats(\\.aspx|/season)?|/sports/.+/stats(/\\d{0,4})?$",
+      statURL
+    )
+  ) {
     "sidearm"
   } else if (grepl("teamcume|teamstat", statURL)) {
     "statcrew"
+  } else if (grepl("\\.pdf$", statURL, ignore.case = TRUE)) {
+    "pdf"
   } else {
     "unknown"
   }
@@ -65,6 +77,9 @@ formatStats <- function(stats_df, col.names){
 
 # Change years to numbers.
 encodeYear <- function(df, yrCol = "Year"){
+  if (is.numeric(df[[yrCol]])) {
+    return(df)
+  }
   dplyr::mutate(df,
                 !!rlang::enquo(yrCol) := dplyr::case_when(
                   grepl("Fr",!!rlang::sym(yrCol)) ~ 1,
@@ -76,12 +91,21 @@ encodeYear <- function(df, yrCol = "Year"){
 # Change Pitching Throwing to RHP/LHP
 pitcherThrows <- function(df, posCol = "Position1", throwCol = "Throws") {
   if(throwCol %in% names(df)) {
-    dplyr::mutate(df,!!rlang::enquo(throwCol) := dplyr::case_when(
-      grepl("[RL]HP", !!rlang::sym(posCol)) ~ stringr::str_extract(!!rlang::sym(posCol),
-                                                                   "[RL]HP"),
-      grepl("P", !!rlang::sym(posCol)) ~ paste0(!!rlang::sym(throwCol), "HP"),
-      TRUE ~ !!rlang::sym(throwCol)
-    ))
+    dplyr::mutate(
+      df,
+      !!rlang::enquo(throwCol) := dplyr::case_when(
+        !grepl(
+          "^[RL]$",
+          !!rlang::sym(posCol)
+        ) &
+          grepl("[RL]HP", !!rlang::sym(posCol)) ~ stringr::str_extract(
+          !!rlang::sym(posCol),
+          "[RL]HP"
+        ),
+        grepl("P", !!rlang::sym(posCol)) ~ paste0(!!rlang::sym(throwCol), "HP"),
+        TRUE ~ !!rlang::sym(throwCol)
+      )
+    )
   } else df
 }
 

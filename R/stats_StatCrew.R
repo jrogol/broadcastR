@@ -63,31 +63,31 @@ cleanStats_StatCrew <- function(tableList) {
 # cleanBatting_StatCrew ----
 
 cleanBatting_StatCrew <- function(table) {
-  batting <- table %>% 
-    tidyr::separate("sb-att",
-                    into = c("sb","att"),
-                    sep = "-",
-                    convert = T)
-  
-  # Caught stealing can be easily calculated:
-  
-  batting <- batting %>% 
-    dplyr::mutate(cs = att-sb)
-  
-  
-  # select the appropriate stats 
-  
-  batting <- dplyr::rename_all(batting,toupper) %>% 
-    dplyr::select(PLAYER, base::intersect(battingStats,names(.))) #broadcastR:::battingStats
-  
+  if ("sb-att" %in% names(table)) {
+    table <- table %>%
+      tidyr::separate("sb-att", into = c("sb", "att"), sep = "-", convert = T)
+
+    # Caught stealing can be easily calculated:
+
+    table <- table %>%
+      dplyr::mutate(cs = att - sb)
+  }
+
+  # select the appropriate stats
+
+  batting <- dplyr::rename_all(table, toupper) %>%
+    dplyr::select(PLAYER, base::intersect(battingStats, names(.))) #broadcastR:::battingStats
+
   # lastly, we'll need to filter out incomplete rows, the Total, and Opposition
   # Stats
-  batting <- dplyr::filter(batting, !is.na(AB),
-                           !grepl("--|totals?|opponents?",PLAYER)) %>% 
-    dplyr::rename_at(dplyr::vars(-PLAYER),~paste0(.,"_BattingSeason"))
-  
+  batting <- dplyr::filter(
+    batting,
+    !is.na(AB),
+    !grepl("--|totals?|opponents?", PLAYER)
+  ) %>%
+    dplyr::rename_at(dplyr::vars(-PLAYER), ~ paste0(., "_BattingSeason"))
+
   return(batting)
-  
 }
 
 

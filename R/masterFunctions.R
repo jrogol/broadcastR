@@ -41,20 +41,20 @@ getData <- function(teamName,rosterURL,statURL, source, sport,
 #' @return
 #' @export
 #'
-#' @examples
 getRoster <- function(teamName, url, source, sport) {
 
-  source <- match.arg(source,
-                      c("sidearm","wmt","presto","liberty"))
+  source <- match.arg(source, c("sidearm", "wmt", "presto", "liberty", "espn"))
   sport <- match.arg(sport,
                      c("baseball","softball"))
   # Error Handling for url
 
-  roster <- switch(source,
-    sidearm = getRoster_Sidearm(teamName,url,sport),
-    wmt = getRoster_WMT(teamName,url,sport),
-    presto = getRoster_Presto(teamName,url,sport),
-    liberty = getRoster_Liberty(teamName,url,sport)
+  roster <- switch(
+    source,
+    sidearm = getRoster_Sidearm(teamName, url, sport),
+    wmt = getRoster_WMT(teamName, url, sport),
+    presto = getRoster_Presto(teamName, url, sport),
+    liberty = getRoster_Liberty(teamName, url, sport),
+    espn = getRoster_ESPN(url)
   )
   
   # Cleaning Steps
@@ -85,10 +85,13 @@ getRoster <- function(teamName, url, source, sport) {
 getStats <- function(team, statURL, roster_df, col.names = format ,...) {
   source <- fetchStatSource(statURL)
   
-  stats <- switch(source,
-         sidearm = getStats_Sidearm(statURL, roster_df),
-         statcrew = getStats_StatCrew(statURL, roster_df),
-         stop(sprintf("Unrecognized stats source for URL: %s", statURL)))
+  stats <- switch(
+    source,
+    sidearm = getStats_Sidearm(statURL, roster_df),
+    statcrew = getStats_StatCrew(statURL, roster_df),
+    pdf = getStats_PDF(statURL, roster_df),
+    stop(sprintf("Unrecognized stats source for URL: %s", statURL))
+  )
   
   return(formatStats(stats, col.names))
 }
