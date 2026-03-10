@@ -12,8 +12,9 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.0.2
-Imports: 
+RoxygenNote: 7.3.3
+Imports:
+    readxl,
     magrittr,
     dplyr,
     tidyr,
@@ -22,7 +23,10 @@ Imports:
     purrr,
     readr,
     stringr,
-    rlang
+    rlang,
+    pdftools,
+    googlesheets4
 Suggests: 
+    config,
     spelling
 Language: en-US
