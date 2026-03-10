@@ -9,30 +9,30 @@
 schedule_details <- function(game_node) {
   # Team name
   opp <- game_node %>%
-    rvest::html_node(".sidearm-schedule-game-opponent-text") %>%
-    rvest::html_node("a") %>%
-    rvest::html_text() %>% 
+    rvest::html_element(".sidearm-schedule-game-opponent-text") %>%
+    rvest::html_element("a") %>%
+    rvest::html_text() %>%
     stringr::str_remove_all("\\*")
   
   # Team website
   link <- game_node %>%
-    rvest::html_node(".sidearm-schedule-game-opponent-name") %>%
-    rvest::html_node("a") %>%
+    rvest::html_element(".sidearm-schedule-game-opponent-name") %>%
+    rvest::html_element("a") %>%
     rvest::html_attr("href")
   
   # Game Date
   date <- game_node %>%
-    rvest::html_node(".sidearm-schedule-game-opponent-date") %>%
+    rvest::html_element(".sidearm-schedule-game-opponent-date") %>%
     rvest::html_text("span") %>%
-    stringr::str_squish() %>% 
+    stringr::str_squish() %>%
     stringr::str_extract(".+?(?=[[:space:]]\\()")
   
   # Game Location
   loc <- game_node %>%
-    rvest::html_node(".sidearm-schedule-game-location") %>%
-    rvest::html_node("span:not([class])") %>% 
-    rvest::html_text(trim = T) %>% 
-    stringr::str_extract("(?<=(\\r[[:space:]])|^).+$") %>% 
+    rvest::html_element(".sidearm-schedule-game-location") %>%
+    rvest::html_element("span:not([class])") %>%
+    rvest::html_text(trim = T) %>%
+    stringr::str_extract("(?<=(\\r[[:space:]])|^).+$") %>%
     stringr::str_trim()
   
   c(team = opp,
@@ -61,8 +61,8 @@ getSchedule <- function(team, year) {
   baseurl <- "https://virginiasports.com/sports/%s/schedule/%i"
   teamurl <- sprintf(baseurl,team, year)
   
-  games <- xml2::read_html(teamurl) %>% 
-    rvest::html_nodes("div.sidearm-schedule-game-row")
+  games <- xml2::read_html(teamurl) %>%
+    rvest::html_elements("div.sidearm-schedule-game-row")
   
   games %>% 
     purrr::map(schedule_details) %>% 

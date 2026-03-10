@@ -4,13 +4,15 @@
 \name{baseballTable}
 \alias{baseballTable}
 \title{Names and abbreviations of the United States}
-\format{A tibble with 27 rows and 5 columns:
+\format{
+A tibble with 27 rows and 5 columns:
 \describe{
 \item{team}{Team name}
 \item{roster}{url of team roster}
 \item{stats}{url for cumulative stats}
 \item{site_type}{site provider}
-}}
+}
+}
 \usage{
 baseballTable
 }

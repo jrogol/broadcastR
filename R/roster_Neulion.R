@@ -2,7 +2,7 @@
 fetchRoster_NL <- function(url){
   page <- xml2::read_html(url)
   
-  table <- rvest::html_node(page,"#roster-list-table")
+  table <- rvest::html_element(page, "#roster-list-table")
   
   table <- rvest::html_table(table, trim = TRUE)
   

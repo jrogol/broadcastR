@@ -4,8 +4,16 @@
 \alias{getData}
 \title{Title}
 \usage{
-getData(teamName, rosterURL, statURL, source, sport, output.dir = NULL,
-  exportRoster = F, ...)
+getData(
+  teamName,
+  rosterURL,
+  statURL,
+  source,
+  sport,
+  output.dir = NULL,
+  exportRoster = F,
+  ...
+)
 }
 \arguments{
 \item{teamName}{}

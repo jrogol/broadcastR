@@ -4,11 +4,13 @@
 \name{states}
 \alias{states}
 \title{Names and abbreviations of the United States}
-\format{A tibble with 146 rows and 2 variables:
+\format{
+A tibble with 146 rows and 2 variables:
 \describe{
 \item{USPS}{Two-letter postal abbreviation}
 \item{state}{Other abbreviations and full name of the state}
-}}
+}
+}
 \source{
 \url{https://en.wikipedia.org/wiki/List_of_U.S._state_abbreviations}
 }

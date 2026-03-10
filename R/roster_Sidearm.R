@@ -10,7 +10,7 @@ getRoster_Sidearm <- function(teamName, url, sport) {
 fetchPlayerNodes_Sidearm <- function(url) {
   page <- xml2::read_html(url)
   
-  players <- rvest::html_nodes(page, css = "li.sidearm-roster-player")
+  players <- rvest::html_elements(page, css = "li.sidearm-roster-player")
   
   return(players)
 }
@@ -19,37 +19,39 @@ fetchPlayerNodes_Sidearm <- function(url) {
 
 # These should be moved into their own, smaller functions....
 fetchPlayer_Sidearm <- function(node) {
-  position <- node %>% 
-    rvest::html_node(css = "span.text-bold") %>%
+  position <- node %>%
+    rvest::html_element(css = "span.text-bold") %>%
     rvest::html_text(trim = T)
   
-  number <- node %>% 
-    rvest::html_node(css = "span.sidearm-roster-player-jersey-number") %>%
+  number <- node %>%
+    rvest::html_element(css = "span.sidearm-roster-player-jersey-number") %>%
     rvest::html_text(trim = T)
   
-  name <- node %>% 
-    rvest::html_node(css = "p") %>%
+  name <- node %>%
+    rvest::html_element(css = "p") %>%
     rvest::html_text(trim = T)
   
   # Pitt uses custom1 - not custom2 - the syntax below enables fuzzy matching
-  bats <- node %>% 
-    rvest::html_node(css = "span[class^=sidearm-roster-player-custom]") %>%
+  bats <- node %>%
+    rvest::html_element(css = "span[class^=sidearm-roster-player-custom]") %>%
     rvest::html_text(trim = T)
   
-  hometown <- node %>% 
-    rvest::html_node(css = "span.sidearm-roster-player-hometown") %>%
+  hometown <- node %>%
+    rvest::html_element(css = "span.sidearm-roster-player-hometown") %>%
     rvest::html_text(trim = T)
   
-  height <- node %>% 
-    rvest::html_node(css = "span.sidearm-roster-player-height") %>%
+  height <- node %>%
+    rvest::html_element(css = "span.sidearm-roster-player-height") %>%
     rvest::html_text(trim = T)
   
-  weight <- node %>% 
-    rvest::html_node(css = "span.sidearm-roster-player-weight") %>%
+  weight <- node %>%
+    rvest::html_element(css = "span.sidearm-roster-player-weight") %>%
     rvest::html_text(trim = T)
   
-  year <- node %>% 
-    rvest::html_nodes(css = "span.sidearm-roster-player-academic-year:not(.hide-on-large)") %>%
+  year <- node %>%
+    rvest::html_elements(
+      css = "span.sidearm-roster-player-academic-year:not(.hide-on-large)"
+    ) %>%
     rvest::html_text(trim = T)
   
   

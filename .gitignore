@@ -32,3 +32,6 @@ teams.csv
 FutureGames.R
 *.Rproj
 broadcastR.Rproj
+data-raw/ex
+data-raw/.DS_Store
+renv/
