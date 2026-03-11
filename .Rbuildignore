@@ -5,4 +5,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^data-raw$
-^Scratch\.R$
+^.{0,}[Ss]cratch\.R$
+
