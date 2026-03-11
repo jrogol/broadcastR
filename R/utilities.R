@@ -66,10 +66,17 @@ formatStats <- function(stats_df, col.names){
   
   col <- gsub("_PlayerDemographics","",col.names)
   
-  output <- stats_df %>% 
-    dplyr::rename(Position= Position1) %>% 
-    `is.na<-` (setdiff(col, names(.))) %>% 
-    dplyr::select(col)
+  output <- stats_df |>
+    dplyr::rename_with(
+      \(x) stringr::str_remove(x, "\\d+$"),
+      dplyr::matches("\\d+$")
+    ) |>
+    (\(x) {
+      missing <- setdiff(col, names(x))
+      x[missing] <- NA
+      x
+    })() |>
+    dplyr::select(dplyr::all_of(col))
   
   return(output)
 }
