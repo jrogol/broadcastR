@@ -60,7 +60,9 @@ getRoster <- function(teamName, url, source, sport) {
   # Cleaning Steps
   roster <- separateName(roster)
   
-  roster <- joinStates(roster)
+  if (source != 'espn') {
+    roster <- joinStates(roster)
+  }
   
   roster <- encodeYear(roster)
   

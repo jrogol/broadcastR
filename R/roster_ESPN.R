@@ -13,7 +13,7 @@ getRoster_ESPN <- function(filePath, sheet = "MAIN", skip = 2, ...) {
     dplyr::transmute(
       Name = paste(Firstname, LastName),
       Number,
-      Position,
+      Position1 = Position,
       Bats,
       Throws,
       Hometown,
