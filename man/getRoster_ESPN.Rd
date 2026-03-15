@@ -8,15 +8,13 @@ getRoster_ESPN(filePath, sheet = "MAIN", skip = 2, ...)
 }
 \arguments{
 \item{filePath}{Path to the .xlsx file}
-
-\item{teamName}{Team name (passed through; not used for reading)}
-
-\item{sport}{"baseball" or "softball"}
+\item{sheet}{Name of the worksheet containing the roster (default: "MAIN").}
+\item{skip}{Number of rows to skip before reading the header (default: 2).}
+\item{...}{Additional arguments passed to the underlying read function.}
 }
 \value{
 A tibble with columns: Number, Name, Position1, Bats, Throws,
-Height, Weight, Year, Hometown, State
-}
+A tibble with columns: Number, Name, Position1, Bats, Throws,
 \description{
 Read a roster from an ESPN production Excel template
 }
