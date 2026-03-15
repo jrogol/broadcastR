@@ -164,9 +164,12 @@ fetchStats_WMT <- function(sess, url, headless = T, ...) {
     # Navigate chromote directly to the iframe src
     js <- "nuxt"
     navigate_and_wait(sess, iframe_src)
+    Sys.sleep(3)
   }
 
-  toggleStats_WMT(sess, js, "Batting")
+  # p <- sess$Page$loadEventFired(wait_ = FALSE)
+  # toggleStats_WMT(sess, js, "Batting")
+  # sess$wait_for(p)
 
   result <- sess$Runtime$evaluate(
     '
@@ -178,7 +181,9 @@ fetchStats_WMT <- function(sess, url, headless = T, ...) {
     rvest::html_table()
 
   # NUXT
+  # p <- sess$Page$domContentEventFired(wait_ = FALSE)
   toggleStats_WMT(sess, js, "Pitching")
+  # sess$wait_for(p)
   result <- sess$Runtime$evaluate(
     '
     document.querySelector("table").outerHTML
@@ -188,7 +193,7 @@ fetchStats_WMT <- function(sess, url, headless = T, ...) {
   pitching_table <- rvest::read_html(result$result$value) |>
     rvest::html_table()
 
-  return(list(batting = batting_table[[1]], pitching = ptiching_table[[1]]))
+  return(list(batting = batting_table[[1]], pitching = pitching_table[[1]]))
 }
 
 
@@ -204,6 +209,7 @@ toggleStats_WMT <- function(
     vue = selectComboBox(sess, 2, option_type),
     nuxt = selectButton(sess, option_type)
   )
+  Sys.sleep(2)
 
   invisible(TRUE)
 }
@@ -217,6 +223,7 @@ selectButton <- function(sess, value) {
     .click()
 '
   ))
+
   invisible(TRUE)
 }
 
