@@ -7,7 +7,16 @@
 getRoster(teamName, url, source, sport)
 }
 \arguments{
-\item{sport}{}
+\item{teamName}{Team Name}
+
+\item{url}{Roster URL}
+
+\item{source}{Service Provider}
+
+\item{sport}{Sport Name}
+}
+\value{
+data.frame
 }
 \description{
 Title

@@ -5,7 +5,6 @@
 #'
 #' @return vector with team name, game location, game date, and opponent url
 #'
-#' @examples
 schedule_details <- function(game_node) {
   # Team name
   opp <- game_node %>%
@@ -50,7 +49,6 @@ schedule_details <- function(game_node) {
 #' @return data frame with four columns for the opponent, game location, game date, and opponent url
 #' @export
 #'
-#' @examples
 getSchedule <- function(team, year) {
   # Year must be numeric
   if(!is.numeric(year)) stop("year must be numeric.")

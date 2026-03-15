@@ -26,6 +26,9 @@ getData(
 
 \item{statsURL}{}
 }
+\value{
+data.frame
+}
 \description{
 Title
 }

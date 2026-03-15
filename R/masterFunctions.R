@@ -6,10 +6,8 @@
 #' @param source 
 #' @param sport 
 #'
-#' @return
+#' @return data.frame
 #' @export
-#'
-#' @examples
 
 getData <- function(teamName,rosterURL,statURL, source, sport, 
                     output.dir = NULL,
@@ -33,12 +31,12 @@ getData <- function(teamName,rosterURL,statURL, source, sport,
 
 #' Title
 #'
-#' @param teamName
-#' @param url
-#' @param source
-#' @param sport
+#' @param teamName Team Name
+#' @param url Roster URL
+#' @param source Service Provider
+#' @param sport Sport Name
 #'
-#' @return
+#' @return data.frame
 #' @export
 #'
 getRoster <- function(teamName, url, source, sport) {
@@ -80,10 +78,9 @@ getRoster <- function(teamName, url, source, sport) {
 #' @param roster_df 
 #' @param ... 
 #'
-#' @return
+#' @return data.frame
 #' @export
 #'
-#' @examples
 getStats <- function(team, statURL, roster_df, col.names = format ,...) {
   source <- fetchStatSource(statURL)
   
@@ -109,10 +106,8 @@ getStats <- function(team, statURL, roster_df, col.names = format ,...) {
 #' @param output.dir 
 #' @param ... 
 #'
-#' @return
 #' @export
 #'
-#' @examples
 exportStats <- function(team, stats_df, na.str = "", output.dir = NULL, ...){
   if (is.null(output.dir)){
     readr::write_csv(stats_df, sprintf("%s_Stats.csv", team), na = na.str, ...)
@@ -130,10 +125,8 @@ exportStats <- function(team, stats_df, na.str = "", output.dir = NULL, ...){
 #' @param output.dir 
 #' @param ... 
 #'
-#' @return
 #' @export
 #'
-#' @examples
 exportRoster <- function(team, roster_df, na.str = "", output.dir = NULL, ...){
   if (is.null(output.dir)){
     readr::write_csv(roster_df, sprintf("%s_Roster.csv", team), na = na.str, ...)

@@ -6,9 +6,8 @@
 #' @param url 
 #' @param sport 
 #'
-#' @return
+#' @return data.frame
 #'
-#' @examples
 fetchRoster_WMT <- function(teamName, url, sport){
   page <- xml2::read_html(url)
   
@@ -26,9 +25,8 @@ fetchRoster_WMT <- function(teamName, url, sport){
 #'
 #' @param roster_df 
 #'
-#' @return
+#' @return data.frame
 #'
-#' @examples
 cleanRoster_WMT <- function(roster_df){
   # Newer WMT sites may omit Batting/Throwing
   if ("B/T" %in% names(roster_df)) {
