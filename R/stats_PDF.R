@@ -104,15 +104,14 @@ cleanStats_PDF <- function(tableList) {
 
 
 cleanBatting_PDF <- function(table) {
-  batting <- dplyr::rename(table, SO = K) %>%
+  batting <- dplyr::rename(table, dplyr::any_of(c(SO = "K", HBP = "HP"))) %>%
     # Coerce stat columns to numeric
     dplyr::mutate(dplyr::across(-PLAYER, as.numeric)) %>%
     # Select only the stats present in battingStats (extras like AVG, SLUG, E ignored)
     dplyr::select(PLAYER, base::intersect(battingStats, names(.))) %>%
     # Drop totals / opponents / incomplete rows
-    dplyr::filter(!is.na(AB),
-                  !grepl("--|totals?|opponents?", PLAYER)) %>%
-    dplyr::rename_at(dplyr::vars(-PLAYER), ~paste0(., "_BattingSeason"))
+    dplyr::filter(!is.na(AB), !grepl("--|totals?|opponents?", PLAYER)) %>%
+    dplyr::rename_at(dplyr::vars(-PLAYER), ~ paste0(., "_BattingSeason"))
 
   return(batting)
 }
@@ -120,15 +119,12 @@ cleanBatting_PDF <- function(table) {
 
 cleanPitching_PDF <- function(table) {
   pitching <- table %>%
-    dplyr::filter(!is.na(ERA),
-                  !grepl("--|totals?|opponents?", PLAYER)) %>%
-    dplyr::rename(G = APP, SO = K) %>%
-    tidyr::separate("W-L",
-                    into = c("Win", "Loss"),
-                    sep  = "-") %>%
+    dplyr::filter(!is.na(ERA), !grepl("--|totals?|opponents?", PLAYER)) %>%
+    dplyr::rename(any_of(c(G = "APP", SO = "K", HBP = "HP"))) %>%
+    tidyr::separate("W-L", into = c("Win", "Loss"), sep = "-") %>%
     dplyr::mutate(dplyr::across(-PLAYER, as.numeric)) %>%
     dplyr::select(PLAYER, base::intersect(pitchingStats, names(.))) %>%
-    dplyr::rename_at(dplyr::vars(-PLAYER), ~paste0(., "_PitchingSeason"))
+    dplyr::rename_at(dplyr::vars(-PLAYER), ~ paste0(., "_PitchingSeason"))
 
   pitching <- dplyr::mutate(pitching,
                             IP_PitchingSeason = format(IP_PitchingSeason, nsmall = 1))
