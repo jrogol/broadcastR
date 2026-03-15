@@ -6,7 +6,7 @@
 #' @param df A data frame or tibble of roster data. Extra columns are ignored.
 #'   Missing supported columns are added as `NA`.
 #'
-#' @returns A tibble with roster variables in this order:
+#' @return A tibble with roster variables in this order:
 #'   `Name`, `Last`, `First`, `Number`, `Position`, `Bats`, `Throws`,
 #'   `Hometown`, `State`, `Height`, `Weight`, `Class`.
 #'
@@ -77,16 +77,18 @@ rosterCheck <- function(teamName,
   existing <- purrr::safely(googlesheets4::read_sheet)(sheetid, teamName)
   
   # If data exists
-  if (is.null(existing$error) &&
-      nrow(existing$result > 1) & !overwrite) {
+  if (
+    is.null(existing$error) &&
+      nrow(existing$result) > 1 &
+      !overwrite
+  ) {
     roster_df <- existing$result
   } else {
     # Fetch the roster if not
     roster <- getRoster(teamName, url, source, sport)
     roster_df <- output_rosterVariables(roster)
-    
-    googlesheets4::sheet_write(roster_df,ss = sheetid,
-                sheet = teamName)
+
+    googlesheets4::sheet_write(roster_df, ss = sheetid, sheet = teamName)
   }
   
   return(roster_df)
