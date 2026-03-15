@@ -276,6 +276,7 @@ toggleStats_WMT <- function(
     vue = selectComboBox(sess, 2, option_type),
     nuxt = selectButton(sess, option_type)
   )
+  Sys.sleep(2)
 
   invisible(TRUE)
 }
@@ -289,6 +290,7 @@ selectButton <- function(sess, value) {
     .click()
 '
   ))
+
   invisible(TRUE)
 }
 
