@@ -155,11 +155,11 @@ fetchStats_WMT <- function(sess, url, headless = T, ...) {
   js <- "vue"
   navigate_and_wait(sess, url)
 
+  Sys.sleep(2)
   # get iframe src from parent DOM
   iframe_src <- sess$Runtime$evaluate(
     "document.querySelector('iframe.cumulative-statistics__content-wrapper')?.src"
   )$result$value
-
   if (!is.null(iframe_src) && startsWith(iframe_src, "https://wmt.games")) {
     # Navigate chromote directly to the iframe src
     js <- "nuxt"
