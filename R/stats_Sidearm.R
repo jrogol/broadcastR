@@ -150,46 +150,114 @@ cleanPitching_Sidearm <- function(listTable,...) {
   return(pitching)
 }
 
+fetchStats_WMT <- function(sess, url, timeout_ms = 10000, ...) {
+  sess$go_to(url)
 
-fetchStats_WMT <- function(sess, url, headless = T, ...) {
-  js <- "vue"
-  navigate_and_wait(sess, url)
+  # Wait for WMT iframe (short probe timeout; rejection = no iframe = Vue page)
+  iframe_probe_ms <- 3000
+  iframe_result <- sess$Runtime$evaluate(
+    wait_for_element_js(
+      "iframe.cumulative-statistics__content-wrapper",
+      return_expr = "el.src",
+      timeout_ms = iframe_probe_ms
+    ),
+    awaitPromise = TRUE,
+    timeout = iframe_probe_ms
+  )
 
-  # get iframe src from parent DOM
-  iframe_src <- sess$Runtime$evaluate(
-    "document.querySelector('iframe.cumulative-statistics__content-wrapper')?.src"
-  )$result$value
+  iframe_src <- iframe_result$result$value # NULL if timed out / not found
 
   if (!is.null(iframe_src) && startsWith(iframe_src, "https://wmt.games")) {
-    # Navigate chromote directly to the iframe src
-    js <- "nuxt"
-    navigate_and_wait(sess, iframe_src)
+    # Nuxt/WMT path: navigate into the iframe, use button + advanced-table selector
+    sess$go_to(iframe_src)
+
+    table_js <- wait_for_element_js(
+      "table.advanced-table__table",
+      "el.outerHTML",
+      timeout_ms
+    )
+
+    batting_result <- sess$Runtime$evaluate(
+      table_js,
+      awaitPromise = TRUE,
+      timeout = timeout_ms
+    )
+    batting <- rvest::read_html(batting_result$result$value) |>
+      rvest::html_table()
+
+    selectButton(sess, "Pitching")
+    pitching_result <- sess$Runtime$evaluate(
+      table_js,
+      awaitPromise = TRUE,
+      timeout = timeout_ms
+    )
+    pitching <- rvest::read_html(pitching_result$result$value) |>
+      rvest::html_table()
+  } else {
+    # Vue/Sidearm path: combobox toggle, generic table selector
+    table_js <- wait_for_element_js("table", "el.outerHTML", timeout_ms)
+
+    selectComboBox(sess, 2, "Batting")
+    batting_result <- sess$Runtime$evaluate(
+      table_js,
+      awaitPromise = TRUE,
+      timeout = timeout_ms
+    )
+    batting <- rvest::read_html(batting_result$result$value) |>
+      rvest::html_table()
+
+    selectComboBox(sess, 2, "Pitching")
+    pitching_result <- sess$Runtime$evaluate(
+      table_js,
+      awaitPromise = TRUE,
+      timeout = timeout_ms
+    )
+    pitching <- rvest::read_html(pitching_result$result$value) |>
+      rvest::html_table()
   }
 
-  toggleStats_WMT(sess, js, "Batting")
-
-  result <- sess$Runtime$evaluate(
-    '
-    document.querySelector("table").outerHTML
-  '
-  )
-
-  batting_table <- rvest::read_html(result$result$value) |>
-    rvest::html_table()
-
-  # NUXT
-  toggleStats_WMT(sess, js, "Pitching")
-  result <- sess$Runtime$evaluate(
-    '
-    document.querySelector("table").outerHTML
-  '
-  )
-
-  pitching_table <- rvest::read_html(result$result$value) |>
-    rvest::html_table()
-
-  return(list(batting = batting_table[[1]], pitching = ptiching_table[[1]]))
+  list(batting = batting[[1]], pitching = pitching[[1]])
 }
+
+# fetchStats_WMT <- function(sess, url, headless = T, ...) {
+#   js <- "vue"
+#   navigate_and_wait(sess, url)
+
+#   # get iframe src from parent DOM
+#   iframe_src <- sess$Runtime$evaluate(
+#     "document.querySelector('iframe.cumulative-statistics__content-wrapper')?.src"
+#   )$result$value
+
+#   if (!is.null(iframe_src) && startsWith(iframe_src, "https://wmt.games")) {
+#     # Navigate chromote directly to the iframe src
+#     js <- "nuxt"
+#     navigate_and_wait(sess, iframe_src)
+#   }
+
+#   toggleStats_WMT(sess, js, "Batting")
+
+#   result <- sess$Runtime$evaluate(
+#     '
+#     document.querySelector("table").outerHTML
+#   '
+#   )
+
+#   batting_table <- rvest::read_html(result$result$value) |>
+#     rvest::html_table()
+
+#   # NUXT
+#   toggleStats_WMT(sess, js, "Pitching")
+#   result <- sess$Runtime$evaluate(
+#     '
+#     document.querySelector("table").outerHTML
+#   '
+#   )
+
+#   pitching_table <- rvest::read_html(result$result$value) |>
+#     rvest::html_table()
+
+#   return(list(batting = batting_table[[1]], pitching = ptiching_table[[1]]))
+# }
 
 
 toggleStats_WMT <- function(
