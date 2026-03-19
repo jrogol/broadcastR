@@ -32,22 +32,22 @@ fetchStats_Sidearm <- function(url, session) {
 
   # Else If...table.w-full tbody tr td:not(:empty)
 
-  battingSection <- page %>%
+  battingSection <- page |>
     rvest::html_element(
       "section#individual-overall-batting, div#individual-batting"
     )
 
-  batting <- battingSection %>%
-    rvest::html_element("table") %>%
+  batting <- battingSection |>
+    rvest::html_element("table") |>
     rvest::html_table()
 
-  pitchingSection <- page %>%
+  pitchingSection <- page |>
     rvest::html_element(
       "section#individual-overall-pitching, div#individual-pitching"
     )
 
-  pitching <- pitchingSection %>%
-    rvest::html_element("table") %>%
+  pitching <- pitchingSection |>
+    rvest::html_element("table") |>
     rvest::html_table()
 
   table <- list(batting = batting, pitching = pitching)
@@ -99,55 +99,58 @@ cleanPlayer_SidearmStats <- function(table, col = c("Player", "Name")) {
 }
 
 cleanBatting_Sidearm <- function(listTable,...){
-  batting <- listTable$batting %>% 
-    tidyr::separate("SB-ATT", into = c("SB","ATT"), convert = T) %>% 
-    dplyr::mutate(CS = ATT-SB)
+  batting <- listTable$batting |>
+    tidyr::separate("SB-ATT", into = c("SB", "ATT"), convert = T) |>
+    dplyr::mutate(CS = ATT - SB)
   
   if("GP-GS" %in% names(listTable$batting)){
     batting <- tidyr::separate(batting,
                                "GP-GS", into = c("GP","GS"), convert = T)
   }
   
-  batting <- batting %>% 
-    dplyr::filter(!is.na(AB),
-                  !grepl("--|Total|Opponent",PLAYER)) %>% 
-    dplyr::select(PLAYER, base::intersect(battingStats,names(.))) %>% 
-    dplyr::rename_at(dplyr::vars(-PLAYER),~paste0(.,"_BattingSeason"))
+  batting <- batting |>
+    dplyr::filter(!is.na(AB), !grepl("--|Total|Opponent", PLAYER)) |>
+    dplyr::select(PLAYER, base::intersect(battingStats, names(.))) |>
+    dplyr::rename_at(dplyr::vars(-PLAYER), ~ paste0(., "_BattingSeason"))
   
   return(batting)
 }
 
 cleanPitching_Sidearm <- function(listTable,...) {
-  pitching <- listTable$pitching %>% 
-    # tidyr::separate("W-L", into = c("Win","Loss"),
-    #                 sep = "-") %>% 
-    # tidyr::separate("APP-GS",
-    #                 into = c("G","GS"),
-    #                 sep = "-") %>% 
-    dplyr::mutate(SHO = stringr::str_remove(SHO,"-.*"))
-  
-  if("W-L" %in% names(listTable$pitching)){
-    pitching <- tidyr::separate(pitching,
-                                "W-L", into = c("Win","Loss"),
-                                sep = "-")
+  pitching <- listTable$pitching |>
+    dplyr::mutate(SHO = stringr::str_remove(SHO, "-.*"))
+
+  if ("W-L" %in% names(listTable$pitching)) {
+    pitching <- tidyr::separate(
+      pitching,
+      "W-L",
+      into = c("Win", "Loss"),
+      sep = "-"
+    )
   }
-  
-  if("APP-GS" %in% names(listTable$pitching)){
-    pitching <-  tidyr::separate(pitching,
-                                 "APP-GS", into = c("G","GS"),
-                                 sep = "-")
-  } else {
-    pitching <- try(dplyr::rename(pitching, "G" = GP),silent = T)
+
+  if ("APP-GS" %in% names(listTable$pitching)) {
+    pitching <- tidyr::separate(
+      pitching,
+      "APP-GS",
+      into = c("G", "GS"),
+      sep = "-"
+    )
   }
+
+  pitching <- dplyr::rename(
+    pitching,
+    G = dplyr::any_of(c("GP", "APP")),
+    Win = dplyr::any_of("W"),
+    Loss = dplyr::any_of("L")
+  ) |>
+    dplyr::rename_with(stringr::str_to_title, dplyr::matches("win|loss"))
+
   
-  pitching <- try(dplyr::rename_at(pitching, dplyr::vars(dplyr::matches("win|loss")),
-                                   stringr::str_to_title), silent = T)
-  
-  pitching <- pitching %>% 
-    dplyr::select(PLAYER, pitchingStats) %>% 
-    dplyr::filter(!is.na(G), 
-                  !grepl("--|Total|Opponent",PLAYER)) %>% 
-    dplyr::rename_at(dplyr::vars(-PLAYER),~paste0(.,"_PitchingSeason"))
+pitching <- pitching |>
+    dplyr::select(PLAYER, pitchingStats) |>
+    dplyr::filter(!is.na(G), !grepl("--|Total|Opponent", PLAYER)) |>
+    dplyr::rename_with(\(x) paste0(x, "_PitchingSeason"), -PLAYER)
   
   pitching <- dplyr::mutate(pitching, IP_PitchingSeason = format(IP_PitchingSeason, nsmall = 1))
   
