@@ -110,8 +110,8 @@ cleanBatting_Sidearm <- function(listTable,...){
   
   batting <- batting |>
     dplyr::filter(!is.na(AB), !grepl("--|Total|Opponent", PLAYER)) |>
-    dplyr::select(PLAYER, base::intersect(battingStats, names(.))) |>
-    dplyr::rename_at(dplyr::vars(-PLAYER), ~ paste0(., "_BattingSeason"))
+    dplyr::select(PLAYER, base::intersect(battingStats, names(batting))) |>
+    dplyr::rename_with(\(x) paste0(x, "_BattingSeason"), -PLAYER)
   
   return(batting)
 }
