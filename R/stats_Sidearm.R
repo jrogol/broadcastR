@@ -76,22 +76,26 @@ cleanStats_Sidearm <- function(listTable){
   return(tables_out)
 }
 
+cleanPlayer_SidearmStats <- function(table, col = c("Player", "Name")) {
+  if (!is.data.frame(table)) {
+    stop("'table' must be a data.frame or tibble")
+  }
 
+  out <- table |>
+    dplyr::rename(Player = dplyr::any_of(col)) |>
+    dplyr::mutate(
+      Player = Player |>
+        as.character() |>
+        stringr::str_remove("\\r\\n.*") |>
+        stringr::str_trim() |>
+        stringr::str_replace(
+          "^([\\w\\-'\\. ]+),\\s*([\\w\\-' ]+)$",
+          "\\2 \\1"
+        )
+    )
 
-cleanPlayer_SidearmStats <- function(table, col = "Player") {
-
-  table[[col]] <- stringr::str_trim(gsub("\\r\\n.*", "", table[[col]]))
-  
-  table[[col]] <- sub(
-    "([\\w\\-' \\.]+), ([\\w\\-' ]+)",
-    "\\2 \\1",
-    table[[col]],
-    perl = T
-  )
-  
-  table <- dplyr::rename_all(table,toupper)
-  
-  return(table)
+  out |>
+    dplyr::rename_with(toupper)
 }
 
 cleanBatting_Sidearm <- function(listTable,...){
