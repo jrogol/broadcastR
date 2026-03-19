@@ -62,3 +62,37 @@ navigate_and_wait <- function(sess, target_url, wait_event = c("load", "domconte
 
   invisible(sess)
 }
+
+
+
+
+#' Wait for JavaScript-rendered elements in Chromote
+#'
+#' @param selector CSS selector string (e.g. "table.advanced-table__table")
+#' @param return_expr JS expression using el (e.g. "el.outerHTML", "el.src")
+#' @param timeout_ms passed to both setTimeout and sess$Runtime$evaluate(timeout = ...)
+#' @returns Templated Javascript formatted as a string for evaluation in Chromote
+#'
+wait_for_element_js <- function(selector, return_expr = "el.outerHTML", timeout_ms = 10000) {
+  sprintf("
+new Promise((resolve, reject) => {
+  const timeout = setTimeout(() => reject('Timeout waiting for: %s'), %d);
+  const getEl = () => document.querySelector('%s');
+  const resolve_if_found = (el) => {
+    if (el) {
+      clearTimeout(timeout);
+      observer.disconnect();
+      resolve(%s);
+    }
+  };
+  const observer = new MutationObserver(() => resolve_if_found(getEl()));
+  const el = getEl();
+  if (el) {
+    clearTimeout(timeout);
+    resolve(%s);
+  } else {
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+});
+  ", selector, timeout_ms, selector, return_expr, return_expr)
+}
