@@ -100,7 +100,7 @@ cleanPlayer_SidearmStats <- function(table, col = c("Player", "Name")) {
 
 cleanBatting_Sidearm <- function(listTable,...){
   batting <- listTable$batting |>
-    dplyr::rename(SO = dplyr::any_of(c("SO", "K")))
+    dplyr::rename(SO = dplyr::any_of(c("SO", "K"))) |>
     tidyr::separate("SB-ATT", into = c("SB", "ATT"), convert = T) |>
     dplyr::mutate(CS = ATT - SB)
   
